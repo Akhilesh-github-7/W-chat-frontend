@@ -26,7 +26,34 @@ const ChatPage = () => {
     const [showProfile, setShowProfile] = useState(false);
     const [chats, setChats] = useState([]);
     const [loadingChats, setLoadingChats] = useState(true);
+    const [onlineUsers, setOnlineUsers] = useState({});
     const { currentUser, updateCurrentUser, token } = useAuth(); // Use currentUser from AuthContext
+    const socket = useSocket();
+
+    useEffect(() => {
+        if (socket) {
+          socket.on('get-online-users', (onlineUserIds) => {
+            const onlineUsersObj = onlineUserIds.reduce((acc, userId) => {
+              acc[userId] = true;
+              return acc;
+            }, {});
+            setOnlineUsers(onlineUsersObj);
+          });
+    
+          socket.on('user-online', (userId) => {
+            setOnlineUsers((prev) => ({ ...prev, [userId]: true }));
+          });
+          socket.on('user-offline', (userId) => {
+            setOnlineUsers((prev) => ({ ...prev, [userId]: false }));
+          });
+    
+          return () => {
+            socket.off('get-online-users');
+            socket.off('user-online');
+            socket.off('user-offline');
+          };
+        }
+      }, [socket]);
 
     const handleSelectChat = (chat) => {
         setActiveChat(chat);
@@ -114,13 +141,14 @@ const ChatPage = () => {
                     onChatCreated={fetchChats}
                     onChatDeleted={handleChatDeleted}
                     onChatCleared={handleChatCleared}
+                    onlineUsers={onlineUsers}
                 />
 
             </div>
 
             {/* Right Panel: Messaging View */}
             <div className={`w-full md:w-2/3 ${activeChat ? 'flex' : 'hidden md:flex'} flex-col flex-grow`}>
-                {activeChat ? <ActiveChatWindow chat={activeChat} currentUser={currentUser} onBack={() => setActiveChat(null)} /> : <ChatPlaceholder />}
+                {activeChat ? <ActiveChatWindow chat={activeChat} currentUser={currentUser} onBack={() => setActiveChat(null)} onlineUsers={onlineUsers} /> : <ChatPlaceholder />}
             </div>
         </div>
     );

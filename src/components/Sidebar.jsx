@@ -7,13 +7,12 @@ import ChatActions from './ChatActions';
 import { useAuth } from '../context/AuthContext';
 
 
-const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats, onChatCreated,onChatDeleted, onChatCleared }) => {
+const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats, onChatCreated,onChatDeleted, onChatCleared, onlineUsers }) => {
   const { theme, toggleTheme } = useTheme();
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [loadingSearchResults, setLoadingSearchResults] = useState(false);
   const socket = useSocket();
-  const [onlineUsers, setOnlineUsers] = useState({}); // Stores {userId: true/false}
   const [contextMenu, setContextMenu] = useState({
     visible: false,
     chat: null,
@@ -21,31 +20,6 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
   });
   const { token } = useAuth();
 
-
-  useEffect(() => {
-    if (socket) {
-      socket.on('get-online-users', (onlineUserIds) => {
-        const onlineUsersObj = onlineUserIds.reduce((acc, userId) => {
-          acc[userId] = true;
-          return acc;
-        }, {});
-        setOnlineUsers(onlineUsersObj);
-      });
-
-      socket.on('user-online', (userId) => {
-        setOnlineUsers((prev) => ({ ...prev, [userId]: true }));
-      });
-      socket.on('user-offline', (userId) => {
-        setOnlineUsers((prev) => ({ ...prev, [userId]: false }));
-      });
-
-      return () => {
-        socket.off('get-online-users');
-        socket.off('user-online');
-        socket.off('user-offline');
-      };
-    }
-  }, [socket]);
 
   useEffect(() => {
     const handleClickOutside = () => {

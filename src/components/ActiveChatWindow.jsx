@@ -9,48 +9,12 @@ import notificationSound from '../assets/notification sound/mixkit-software-inte
 import ChatBackground from '../assets/images/Chat Background.jpg';
 import ImageViewer from './ImageViewer'; // Import ImageViewer
 
-const ActiveChatWindow = ({ chat, currentUser, onBack }) => {
+const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
     const { theme } = useTheme();
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
     const socket = useSocket();
-    const [onlineUsers, setOnlineUsers] = useState({}); // Stores {userId: true/false}
     const messagesEndRef = useRef(null); // Ref for auto-scrolling
-
-    // State for image viewer
-    const [showImageViewer, setShowImageViewer] = useState(false);
-    const [currentImage, setCurrentImage] = useState(null);
-
-    const openImageViewer = (imageUrl) => {
-        setCurrentImage(imageUrl);
-        setShowImageViewer(true);
-    };
-
-    const closeImageViewer = () => {
-        setCurrentImage(null);
-        setShowImageViewer(false);
-    };
-
-    // Auto-scroll to bottom of messages
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages]);
-
-    useEffect(() => {
-        if (socket) {
-          socket.on('user-online', (userId) => {
-            setOnlineUsers((prev) => ({ ...prev, [userId]: true }));
-          });
-          socket.on('user-offline', (userId) => {
-            setOnlineUsers((prev) => ({ ...prev, [userId]: false }));
-          });
-    
-          return () => {
-            socket.off('user-online');
-            socket.off('user-offline');
-          };
-        }
-      }, [socket]);
 
     useEffect(() => {
         const fetchMessages = async () => {
