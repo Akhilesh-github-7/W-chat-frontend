@@ -228,6 +228,13 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
               const otherUser = chat.users.find(u => u?._id !== currentUser._id);
               const isOnline = onlineUsers[otherUser?._id];
 
+              // If it's not a group chat and no other user is found, skip rendering this chat to prevent errors.
+              // This can happen if chat data is incomplete or corrupted.
+              if (!chat.isGroupChat && !otherUser) {
+                console.warn("Skipping chat due to missing otherUser:", chat);
+                return null;
+              }
+
               return (
                 <div
                   key={chat._id}
@@ -248,7 +255,7 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
                   </div>
                   <div className="flex-1">
                     <div className="flex justify-between items-center">
-                      <h3 className="font-semibold">{chat.isGroupChat ? chat.chatName : otherUser?.name}</h3>
+                      <h3 className="font-semibold">{chat.isGroupChat ? chat.chatName : otherUser?.name || 'Unknown User'}</h3>
                     </div>
                     <div className="flex justify-between items-center text-sm text-gray-600 dark:text-gray-400">
                       <p className="truncate w-40">{chat.latestMessage?.content || "No messages yet"}</p>
