@@ -101,6 +101,7 @@ const ChatPage = () => {
             setChats((prevChats) => {
                 const existingChatIndex = prevChats.findIndex(chat => chat._id === newMessage.chat._id);
 
+                let newChats;
                 if (existingChatIndex > -1) {
                     // Chat already exists, update it with the new latest message
                     const updatedChat = {
@@ -110,14 +111,30 @@ const ChatPage = () => {
                     };
 
                     // Move the updated chat to the top of the list
-                    const newChats = [updatedChat, ...prevChats.filter(chat => chat._id !== newMessage.chat._id)];
-                    return newChats;
+                    newChats = [updatedChat, ...prevChats.filter(chat => chat._id !== newMessage.chat._id)];
                 } else {
-                    // If the chat doesn't exist in our current list, it's a new chat.
-                    // Re-fetch all chats to include the new one.
-                    fetchChats();
-                    return prevChats; // Return previous state until fetchChats completes
+                    // This is a new chat (e.g., someone started a conversation with me)
+                    // We need to add this new chat to the list.
+                    // The newMessage object should contain the full chat object.
+                    // If not, a fetch for this specific chat might be necessary.
+                    const newChat = {
+                        ...newMessage.chat, // Assuming newMessage.chat contains enough info for the sidebar
+                        latestMessage: newMessage,
+                        // TODO: Potentially add unread count
+                    };
+                    newChats = [newChat, ...prevChats];
                 }
+                return newChats;
+            });
+
+            // Also, update the active chat if it's the one receiving the message
+            // This ensures the ChatWindow also gets the latestMessage update if it's active
+            setActiveChat(prevActiveChat => {
+                if (prevActiveChat && prevActiveChat._id === newMessage.chat._id) {
+                    // Only update latestMessage, ChatWindow's own msg-received listener will handle messages array
+                    return { ...prevActiveChat, latestMessage: newMessage };
+                }
+                return prevActiveChat;
             });
         };
 
@@ -126,7 +143,7 @@ const ChatPage = () => {
         return () => {
             socket.off('msg-received', handleNewMessage);
         };
-    }, [socket, currentUser, fetchChats]); // Depend on socket, currentUser, and the stable fetchChats
+    }, [socket, currentUser, setActiveChat]); // fetchChats is no longer directly in this dependency array
 
     const handleAvatarUpdate = (relativeUrl) => {
         updateCurrentUser(prevUser => ({ ...prevUser, avatar: relativeUrl }));
