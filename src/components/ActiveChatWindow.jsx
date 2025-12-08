@@ -31,11 +31,9 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
     };
 
     // Auto-scroll to bottom of messages
-    /*
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
-    */
 
     useEffect(() => {
         const fetchMessages = async () => {
@@ -177,17 +175,16 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
     }
 
     return (
-        <div 
-            className="flex-1 flex flex-col bg-cover bg-center bg-no-repeat" 
-            style={{ backgroundImage: `url(${ChatBackground})` }}
-        >
-            <ChatHeader 
+                <div
+                    className="h-full flex-1 flex flex-col bg-cover bg-center bg-no-repeat"
+                    style={{ backgroundImage: `url(${ChatBackground})` }}
+                >            <ChatHeader 
                 contactName={contact?.name} 
                 contactAvatar={avatarSrc} 
                 isOnline={isContactOnline} 
                 onBack={onBack} 
             />
-            <div className="h-[600px] p-4 overflow-y-auto custom-scrollbar min-h-0">
+            <div className="flex-1 p-4 overflow-y-auto custom-scrollbar min-h-0">
                 {messages.map(msg => (
                     <MessageBubble key={msg._id} message={msg} currentUserId={currentUser._id} onImageClick={openImageViewer} />
                 ))}
