@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { BsEmojiSmile, BsPaperclip, BsSendFill, BsXCircle } from 'react-icons/bs';
 import Picker from 'emoji-picker-react';
+import { useSocket } from '../context/SocketContext'; // Import useSocket
 
 
 const MessageInput = ({ selectedChat, onSendMessage, onFileUpload }) => {
@@ -9,6 +10,7 @@ const MessageInput = ({ selectedChat, onSendMessage, onFileUpload }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false); // State for emoji picker visibility
+  const socket = useSocket(); // Get socket instance
 
   const handleSendMessage = async () => {
     if (!selectedChat || (!message.trim() && !selectedFile)) return;
@@ -41,6 +43,9 @@ const MessageInput = ({ selectedChat, onSendMessage, onFileUpload }) => {
         if (fileInputRef.current) {
           fileInputRef.current.value = '';
         }
+
+        // Emit message via socket
+        socket.emit('send-msg', data);
       } else {
         console.error('Failed to send message:', data.message);
         alert('Failed to send message.');

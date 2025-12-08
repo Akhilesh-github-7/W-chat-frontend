@@ -1,5 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
+import { useSocket } from '../context/SocketContext'; // Import useSocket
+import { useAuth } from '../context/AuthContext'; // Import useAuth
+import MessageBubble from './MessageBubble';
+import MessageInput from './MessageInput';
+import ChatHeader from './ChatHeader';
 
 
 const ChatWindow = ({ selectedChat }) => {
@@ -7,6 +12,9 @@ const ChatWindow = ({ selectedChat }) => {
   const [messages, setMessages] = useState([]);
   const [loadingMessages, setLoadingMessages] = useState(false);
   const messagesEndRef = useRef(null);
+  const socket = useSocket(); // Get socket instance
+  const { currentUser } = useAuth(); // Get current user
+
 
   const fetchMessages = async () => {
     if (!selectedChat || !selectedChat._id) {
@@ -42,6 +50,30 @@ const ChatWindow = ({ selectedChat }) => {
     // Auto-scroll to the bottom when messages change
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Listen for incoming messages
+  useEffect(() => {
+    if (!socket || !selectedChat) return;
+
+    const handleNewMessage = (newMessage) => {
+        // Only add the message if it belongs to the currently selected chat
+        // and it's not a message sent by the current user (to avoid duplicates from self-send)
+        if (newMessage.chat._id === selectedChat._id && newMessage.sender._id !== currentUser._id) {
+            setMessages((prevMessages) => [...prevMessages, newMessage]);
+        }
+    };
+
+    socket.on('msg-received', handleNewMessage);
+
+    // Join the chat room on the socket
+    socket.emit('join-chat', selectedChat._id);
+
+    return () => {
+      socket.off('msg-received', handleNewMessage);
+      // Optionally leave the chat room if needed, but often not necessary for a chat app
+    };
+  }, [socket, selectedChat, currentUser]); // Re-run effect if socket, selectedChat, or currentUser changes
+
 
   const handleSendMessage = (text, image) => {
     if (!selectedChat) return;
