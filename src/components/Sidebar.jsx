@@ -128,7 +128,6 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
   };
 
   const handleDeleteChat = async (chatId) => {
-    console.log('Deleting chat with ID:', chatId);
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chats/${chatId}`, {
         method: 'DELETE',
