@@ -16,6 +16,25 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
     const socket = useSocket();
     const messagesEndRef = useRef(null); // Ref for auto-scrolling
 
+    // State for image viewer
+    const [showImageViewer, setShowImageViewer] = useState(false);
+    const [currentImage, setCurrentImage] = useState(null);
+
+    const openImageViewer = (imageUrl) => {
+        setCurrentImage(imageUrl);
+        setShowImageViewer(true);
+    };
+
+    const closeImageViewer = () => {
+        setCurrentImage(null);
+        setShowImageViewer(false);
+    };
+
+    // Auto-scroll to bottom of messages
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+
     useEffect(() => {
         const fetchMessages = async () => {
             if (chat?._id && currentUser?._id) { // Ensure currentUser is available
