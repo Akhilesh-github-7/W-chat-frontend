@@ -242,7 +242,7 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
             <p>No chats found.</p>
           ) : (
             filteredChats.map((chat) => {
-              const otherUser = chat.users.find(u => u._id !== currentUser._id);
+              const otherUser = chat.users.find(u => u?._id !== currentUser._id);
               const isOnline = onlineUsers[otherUser?._id];
 
               return (
