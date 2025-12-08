@@ -31,9 +31,11 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
     };
 
     // Auto-scroll to bottom of messages
+    /*
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
+    */
 
     useEffect(() => {
         const fetchMessages = async () => {
