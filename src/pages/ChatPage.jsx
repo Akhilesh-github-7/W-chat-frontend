@@ -158,18 +158,19 @@ const ChatPage = () => {
                 </div>
 
                 {/* Chat List Panel (Static) */}
-                <Sidebar 
-                    onSelectChat={handleSelectChat} 
-                    onShowProfile={() => setShowProfile(true)} 
-                    currentUser={currentUser}
-                    chats={chats}
-                    loadingChats={loadingChats}
-                    onChatCreated={fetchChats}
-                    onChatDeleted={handleChatDeleted}
-                    onChatCleared={handleChatCleared}
-                    onlineUsers={onlineUsers}
-                />
-
+                                {currentUser && ( // Only render Sidebar if currentUser is not null
+                                    <Sidebar
+                                        onSelectChat={handleSelectChat}
+                                        onShowProfile={() => setShowProfile(true)}
+                                        currentUser={currentUser}
+                                        chats={chats}
+                                        loadingChats={loadingChats}
+                                        onChatCreated={fetchChats}
+                                        onChatDeleted={handleChatDeleted}
+                                        onChatCleared={handleChatCleared}
+                                        onlineUsers={onlineUsers}
+                                    />
+                                )}
             </div>
 
             {/* Right Panel: Messaging View */}
