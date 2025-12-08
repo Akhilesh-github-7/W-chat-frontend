@@ -7,6 +7,7 @@ import { useTheme } from '../context/ThemeContext'; // Import useTheme
 import getAvatarUrl from '../utils/avatar';
 import Sidebar from '../components/Sidebar';
 import { useAuth } from '../context/AuthContext'; // Import useAuth
+import { useSocket } from '../context/SocketContext';
 
 const ChatPlaceholder = () => (
     <div className="flex-1 flex items-center justify-center bg-gray-100 dark:bg-gray-900">
