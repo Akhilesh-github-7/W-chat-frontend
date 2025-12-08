@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { BsThreeDotsVertical, BsSearch } from 'react-icons/bs';
 import { RiChat3Line } from 'react-icons/ri';
 import ActiveChatWindow from '../components/ActiveChatWindow';
