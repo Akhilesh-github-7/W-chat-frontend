@@ -69,7 +69,7 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
         };
 
         fetchMessages();
-    }, [chat, currentUser]); // Add currentUser to dependencies
+    }, [chat?._id, currentUser?._id]); // Only re-fetch if chat ID or current user ID changes
 
     // Mark messages as seen when they appear in the chat window
     useEffect(() => {
