@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Scrollbar for Chat Window */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color of the track */
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #888; /* Color of the scroll thumb */
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Color of the scroll thumb on hover */
+}
+
+/* Dark mode scrollbar */
+.dark .custom-scrollbar::-webkit-scrollbar-track {
+  background: #202c33; /* Darker track for dark mode */
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #4a5a64; /* Darker thumb for dark mode */
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #6a7a84; /* Darker thumb hover for dark mode */
+}
