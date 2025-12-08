@@ -60,7 +60,7 @@ const ChatPage = () => {
         setActiveChat(chat);
     };
 
-    const fetchChats = async () => {
+    const fetchChats = useCallback(async () => {
         setLoadingChats(true);
         try {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chats`, {
@@ -85,13 +85,48 @@ const ChatPage = () => {
         } finally {
             setLoadingChats(false);
         }
-    };
+    }, [token, activeChat]); // Depend on token and activeChat
 
     useEffect(() => {
         if (token) { // Only fetch chats if a token exists
             fetchChats();
         }
-    }, [token]); // Re-fetch chats when token changes
+    }, [token, fetchChats]); // Re-fetch chats when token or fetchChats changes
+
+    // Listen for incoming messages to update the sidebar chat list
+    useEffect(() => {
+        if (!socket || !currentUser) return;
+
+        const handleNewMessage = (newMessage) => {
+            setChats((prevChats) => {
+                const existingChatIndex = prevChats.findIndex(chat => chat._id === newMessage.chat._id);
+
+                if (existingChatIndex > -1) {
+                    // Chat already exists, update it with the new latest message
+                    const updatedChat = {
+                        ...prevChats[existingChatIndex],
+                        latestMessage: newMessage,
+                        // TODO: Potentially add logic for unread count here
+                    };
+
+                    // Move the updated chat to the top of the list
+                    const newChats = [updatedChat, ...prevChats.filter(chat => chat._id !== newMessage.chat._id)];
+                    return newChats;
+                } else {
+                    // If the chat doesn't exist in our current list, it's a new chat.
+                    // Re-fetch all chats to include the new one.
+                    fetchChats();
+                    return prevChats; // Return previous state until fetchChats completes
+                }
+            });
+        };
+
+        socket.on('msg-received', handleNewMessage);
+
+        return () => {
+            socket.off('msg-received', handleNewMessage);
+        };
+    }, [socket, currentUser, fetchChats]); // Depend on socket, currentUser, and the stable fetchChats
 
     const handleAvatarUpdate = (relativeUrl) => {
         updateCurrentUser(prevUser => ({ ...prevUser, avatar: relativeUrl }));
