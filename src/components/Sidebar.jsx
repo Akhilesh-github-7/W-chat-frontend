@@ -24,6 +24,14 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
 
   useEffect(() => {
     if (socket) {
+      socket.on('get-online-users', (onlineUserIds) => {
+        const onlineUsersObj = onlineUserIds.reduce((acc, userId) => {
+          acc[userId] = true;
+          return acc;
+        }, {});
+        setOnlineUsers(onlineUsersObj);
+      });
+
       socket.on('user-online', (userId) => {
         setOnlineUsers((prev) => ({ ...prev, [userId]: true }));
       });
@@ -32,6 +40,7 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
       });
 
       return () => {
+        socket.off('get-online-users');
         socket.off('user-online');
         socket.off('user-offline');
       };
