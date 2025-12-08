@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BsThreeDotsVertical, BsSearch } from 'react-icons/bs';
 import { RiChat3Line } from 'react-icons/ri';
 import ActiveChatWindow from '../components/ActiveChatWindow';
@@ -60,7 +60,7 @@ const ChatPage = () => {
         setActiveChat(chat);
     };
 
-    const fetchChats = useCallback(async () => {
+    const fetchChats = async () => {
         setLoadingChats(true);
         try {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chats`, {
@@ -85,13 +85,13 @@ const ChatPage = () => {
         } finally {
             setLoadingChats(false);
         }
-    }, [token, activeChat]); // Depend on token and activeChat
+    };
 
     useEffect(() => {
         if (token) { // Only fetch chats if a token exists
             fetchChats();
         }
-    }, [token, fetchChats]); // Re-fetch chats when token or fetchChats changes
+    }, [token]); // Re-fetch chats when token changes
 
     // Listen for incoming messages to update the sidebar chat list
     useEffect(() => {
