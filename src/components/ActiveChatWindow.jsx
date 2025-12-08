@@ -187,7 +187,7 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
                 isOnline={isContactOnline} 
                 onBack={onBack} 
             />
-            <div className="h-[500px] p-4 overflow-y-auto custom-scrollbar min-h-0">
+            <div className="h-[600px] p-4 overflow-y-auto custom-scrollbar min-h-0">
                 {messages.map(msg => (
                     <MessageBubble key={msg._id} message={msg} currentUserId={currentUser._id} onImageClick={openImageViewer} />
                 ))}
