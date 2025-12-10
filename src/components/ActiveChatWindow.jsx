@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import PropTypes from 'prop-types'; // Import PropTypes
 import MessageBubble from './MessageBubble';
 import MessageInput from './MessageInput';
 import { useTheme } from '../context/ThemeContext';
@@ -10,7 +11,7 @@ import ChatBackground from '../assets/images/Chat Background.jpg';
 import ImageViewer from './ImageViewer'; // Import ImageViewer
 
 const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
-    const { theme } = useTheme();
+    const { } = useTheme();
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
     const socket = useSocket();
@@ -33,43 +34,50 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
     // Auto-scroll to bottom of messages
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages]);
+    }, [messages, chat]);
+
+    const fetchMessages = useCallback(async () => {
+        if (chat?._id && currentUser?._id) { // Ensure currentUser is available
+            setLoading(true);
+            try {
+                const token = sessionStorage.getItem('token');
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chats/${chat._id}/messages`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    const messagesWithSentByMe = data.messages.map(msg => {
+                        const sentByMe = msg.sender._id === currentUser._id;
+                        console.log('fetchMessages - BEFORE SET: Message sender ID:', msg.sender._id, 'Current user ID:', currentUser._id, 'Calculated Sent by me:', sentByMe);
+                        return {
+                            ...msg,
+                            sentByMe: sentByMe
+                        };
+                    });
+                    setMessages(messagesWithSentByMe.reverse());
+                } else {
+                    console.error('Failed to fetch messages:', data.message);
+                }
+            } catch (error) {
+                console.error('Error fetching messages:', error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [chat?._id, currentUser?._id]); // Dependencies for useCallback
 
     useEffect(() => {
-        const fetchMessages = async () => {
-            if (chat?._id && currentUser?._id) { // Ensure currentUser is available
-                setLoading(true);
-                try {
-                    const token = sessionStorage.getItem('token');
-                    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chats/${chat._id}/messages`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-                    const data = await response.json();
-                    if (response.ok) {
-                        const messagesWithSentByMe = data.messages.map(msg => {
-                            const sentByMe = msg.sender._id === currentUser._id;
-                            console.log('fetchMessages - BEFORE SET: Message sender ID:', msg.sender._id, 'Current user ID:', currentUser._id, 'Calculated Sent by me:', sentByMe);
-                            return {
-                                ...msg,
-                                sentByMe: sentByMe
-                            };
-                        });
-                        setMessages(messagesWithSentByMe.reverse());
-                    } else {
-                        console.error('Failed to fetch messages:', data.message);
-                    }
-                } catch (error) {
-                    console.error('Error fetching messages:', error);
-                } finally {
-                    setLoading(false);
-                }
-            }
-        };
-
         fetchMessages();
-    }, [chat?._id, currentUser?._id]); // Only re-fetch if chat ID or current user ID changes
+    }, [fetchMessages]);
+
+    // Effect to reset messages when the chat is cleared from the parent
+    useEffect(() => {
+        if (chat && (chat.messages?.length === 0 || chat.latestMessage === null)) {
+            setMessages([]);
+        }
+    }, [chat?._id, chat?.messages, chat?.latestMessage]);
 
     // Mark messages as seen when they appear in the chat window
     useEffect(() => {
@@ -197,6 +205,19 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
             )}
         </div>
     );
+};
+
+// Add prop types validation
+ActiveChatWindow.propTypes = {
+    chat: PropTypes.shape({
+        _id: PropTypes.string.isRequired,
+        users: PropTypes.array.isRequired,
+        latestMessage: PropTypes.object,
+        messages: PropTypes.array,
+    }),
+    currentUser: PropTypes.object.isRequired,
+    onBack: PropTypes.func.isRequired,
+    onlineUsers: PropTypes.object.isRequired,
 };
 
 export default ActiveChatWindow;

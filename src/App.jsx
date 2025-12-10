@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -8,8 +8,7 @@ import ProfilePage from './pages/ProfilePage';
 import ChatPage from "./pages/ChatPage"; // Import the new ChatPage
 
 function App() {
-  const [selectedChat, setSelectedChat] = useState(null);
-  const [showProfileSidebar, setShowProfileSidebar] = useState(false);
+
 
   return (
     <Routes>
