@@ -13,7 +13,7 @@ const ChatPlaceholder = () => (
     <div className="flex-1 flex items-center justify-center bg-gray-100 dark:bg-gray-900">
         <div className="text-center">
             <RiChat3Line className="mx-auto text-gray-400 dark:text-gray-600" size={80} />
-            <h1 className="mt-4 text-3xl text-gray-600 dark:text-gray-500">ChatApp Web</h1>
+            <h1 className="mt-4 text-3xl text-gray-600 dark:text-gray-500">W-Chat Web</h1>
             <p className="mt-2 text-lg text-gray-500 dark:text-gray-600">
                 Select a chat to start messaging
             </p>
