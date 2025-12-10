@@ -84,7 +84,7 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
 
       const data = await response.json();
       if (response.ok) {
-        onChatCreated();
+        onChatCreated(data);
         onSelectChat(data); // Pass the chat to the parent component
         setSearchTerm(''); // Clear search term
         setSearchResults([]); // Clear search results

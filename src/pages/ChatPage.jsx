@@ -98,14 +98,27 @@ const ChatPage = () => {
         if (!socket || !currentUser) return;
 
         const handleNewMessage = (newMessage) => {
-            // Instead of trying to deeply update state, re-fetch all chats for simplicity and correctness
-            fetchChats();
+            setChats(prevChats => {
+                const chatIndex = prevChats.findIndex(c => c._id === newMessage.chat._id);
+        
+                if (chatIndex > -1) {
+                    // Chat exists, update its latestMessage and move to top
+                    const updatedChat = { ...prevChats[chatIndex], latestMessage: newMessage };
+                    const filteredChats = prevChats.filter(c => c._id !== newMessage.chat._id);
+                    return [updatedChat, ...filteredChats];
+                } else {
+                    // New chat, fetch it and add to the list
+                    // This case might happen if a new chat is initiated by another user
+                    fetchChats(); // Or, ideally, you'd just fetch the single new chat info
+                    return prevChats;
+                }
+            });
 
             // Also, update the active chat if it's the one receiving the message
             setActiveChat(prevActiveChat => {
                 if (prevActiveChat && prevActiveChat._id === newMessage.chat._id) {
-                    // Only update latestMessage, ChatWindow's own msg-received listener will handle messages array
-                    return { ...prevActiveChat, latestMessage: newMessage };
+                    // This ensures the message count and latest message updates in the ActiveChatWindow
+                    return { ...prevActiveChat, latestMessage: newMessage, messages: [...(prevActiveChat.messages || []), newMessage] };
                 }
                 return prevActiveChat;
             });
@@ -131,11 +144,14 @@ const ChatPage = () => {
     };
     
     const handleChatCleared = (chatId) => {
-        // Refetch chats to get the updated latestMessage
-        fetchChats();
+        setChats(prevChats =>
+            prevChats.map(chat =>
+                chat._id === chatId ? { ...chat, latestMessage: null } : chat
+            )
+        );
         // If the cleared chat is the active chat, refresh the chat window
         if (activeChat?._id === chatId) {
-            setActiveChat(prev => ({ ...prev, messages: [] }));
+            setActiveChat(prev => ({ ...prev, messages: [] , latestMessage: null}));
         }
     };
     
@@ -165,7 +181,7 @@ const ChatPage = () => {
                                         currentUser={currentUser}
                                         chats={chats}
                                         loadingChats={loadingChats}
-                                        onChatCreated={fetchChats}
+                                        onChatCreated={(newChat) => setChats(prevChats => [newChat, ...prevChats])}
                                         onChatDeleted={handleChatDeleted}
                                         onChatCleared={handleChatCleared}
                                         onlineUsers={onlineUsers}
