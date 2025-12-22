@@ -8,20 +8,24 @@ const ChatHeader = ({ contactName, contactAvatar, isOnline, onBack }) => {
 
   return (
     <div
-      className={`sticky top-0 z-10 p-4 flex items-center shadow-md
-      ${theme === 'dark' ? 'bg-whatsapp-dark-bg-tertiary text-white' : 'bg-white text-gray-800'}`}
+      className="sticky top-0 z-10 p-4 flex items-center bg-black/20 backdrop-blur-md shadow-lg"
     >
-      <button onClick={onBack} className="mr-4 md:hidden">
+      <button onClick={onBack} className="mr-4 md:hidden text-white">
         <IoArrowBack size={24} />
       </button>
-      <img
-        src={contactAvatar || profilePlaceholder}
-        alt={`${contactName}'s avatar`}
-        className="w-10 h-10 rounded-full mr-4"
-      />
+      <div className="relative">
+        <img
+          src={contactAvatar || profilePlaceholder}
+          alt={`${contactName}'s avatar`}
+          className="w-11 h-11 rounded-full mr-4 border-2 border-cyan-400/50"
+        />
+        {isOnline && (
+          <div className="absolute bottom-0 right-4 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-gray-800 shadow-[0_0_5px_#39FF14]"></div>
+        )}
+      </div>
       <div>
-        <h2 className="text-lg font-semibold">{contactName}</h2>
-        <p className={`text-sm ${isOnline ? 'text-green-500' : 'text-gray-500 dark:text-gray-400'}`}>
+        <h2 className="text-lg font-bold text-white">{contactName}</h2>
+        <p className={`text-sm font-semibold ${isOnline ? 'text-green-400' : 'text-gray-400'}`}>
           {isOnline ? 'online' : 'offline'}
         </p>
       </div>

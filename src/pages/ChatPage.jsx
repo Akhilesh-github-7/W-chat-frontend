@@ -10,11 +10,11 @@ import { useAuth } from '../context/AuthContext'; // Import useAuth
 import { useSocket } from '../context/SocketContext';
 
 const ChatPlaceholder = () => (
-    <div className="flex-1 flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+    <div className="flex-1 flex items-center justify-center bg-transparent">
         <div className="text-center">
-            <RiChat3Line className="mx-auto text-gray-400 dark:text-gray-600" size={80} />
-            <h1 className="mt-4 text-3xl text-gray-600 dark:text-gray-500">W-Chat Web</h1>
-            <p className="mt-2 text-lg text-gray-500 dark:text-gray-600">
+            <RiChat3Line className="mx-auto text-cyan-400/50" size={100} />
+            <h1 className="mt-4 text-4xl font-bold text-white/80">W-Chat Web</h1>
+            <p className="mt-2 text-xl text-white/60">
                 Select a chat to start messaging
             </p>
         </div>
@@ -156,42 +156,48 @@ const ChatPage = () => {
     };
     
     return (
-        <div className={`flex h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white overflow-hidden`}>
-            {/* Left Panel Container */}
-            <div className={`relative w-full md:w-1/3 md:max-w-md ${activeChat ? 'hidden md:flex' : 'flex'} flex-col flex-grow`}>
-                {/* Profile Panel (Sliding) */}
-                <div
-                    className={`absolute top-0 left-0 w-full h-full bg-white dark:bg-gray-800 z-20 transform transition-transform duration-300 ease-in-out ${
-                        showProfile ? 'translate-x-0' : '-translate-x-full'
-                    }`}
-                >
-                    <ProfilePage
-                        onCloseProfile={() => setShowProfile(false)}
-                        onAvatarUpdate={handleAvatarUpdate}
-                        avatar={getAvatarUrl(currentUser?.avatar)}
-                        user={currentUser}
-                    />
+        <div className="h-screen w-full flex items-center justify-center bg-gray-900 font-inter">
+            {/* Background Gradient */}
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-500 via-cyan-500 to-blue-700 opacity-30 animate-gradient"></div>
+
+            {/* Main container with glassmorphism */}
+            <div className="relative w-11/12 h-[95vh] bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden flex">
+                {/* Left Panel Container */}
+                <div className={`relative w-full md:w-1/3 md:max-w-md ${activeChat ? 'hidden md:flex' : 'flex'} flex-col flex-grow bg-black/20`}>
+                    {/* Profile Panel (Sliding) */}
+                    <div
+                        className={`absolute top-0 left-0 w-full h-full bg-gray-800/80 backdrop-blur-md z-20 transform transition-transform duration-300 ease-in-out ${
+                            showProfile ? 'translate-x-0' : '-translate-x-full'
+                        }`}
+                    >
+                        <ProfilePage
+                            onCloseProfile={() => setShowProfile(false)}
+                            onAvatarUpdate={handleAvatarUpdate}
+                            avatar={getAvatarUrl(currentUser?.avatar)}
+                            user={currentUser}
+                        />
+                    </div>
+
+                    {/* Chat List Panel (Static) */}
+                    {currentUser && (
+                        <Sidebar
+                            onSelectChat={handleSelectChat}
+                            onShowProfile={() => setShowProfile(true)}
+                            currentUser={currentUser}
+                            chats={chats}
+                            loadingChats={loadingChats}
+                            onChatCreated={(newChat) => setChats(prevChats => [newChat, ...prevChats])}
+                            onChatDeleted={handleChatDeleted}
+                            onChatCleared={handleChatCleared}
+                            onlineUsers={onlineUsers}
+                        />
+                    )}
                 </div>
 
-                {/* Chat List Panel (Static) */}
-                                {currentUser && ( // Only render Sidebar if currentUser is not null
-                                    <Sidebar
-                                        onSelectChat={handleSelectChat}
-                                        onShowProfile={() => setShowProfile(true)}
-                                        currentUser={currentUser}
-                                        chats={chats}
-                                        loadingChats={loadingChats}
-                                        onChatCreated={(newChat) => setChats(prevChats => [newChat, ...prevChats])}
-                                        onChatDeleted={handleChatDeleted}
-                                        onChatCleared={handleChatCleared}
-                                        onlineUsers={onlineUsers}
-                                    />
-                                )}
-            </div>
-
-            {/* Right Panel: Messaging View */}
-            <div className={`w-full md:w-2/3 ${activeChat ? 'flex' : 'hidden md:flex'} flex-col flex-grow`}>
-                {activeChat ? <ActiveChatWindow chat={activeChat} currentUser={currentUser} onBack={() => setActiveChat(null)} onlineUsers={onlineUsers} /> : <ChatPlaceholder />}
+                {/* Right Panel: Messaging View */}
+                <div className={`w-full md:w-2/3 ${activeChat ? 'flex' : 'hidden md:flex'} flex-col flex-grow`}>
+                    {activeChat ? <ActiveChatWindow chat={activeChat} currentUser={currentUser} onBack={() => setActiveChat(null)} onlineUsers={onlineUsers} /> : <ChatPlaceholder />}
+                </div>
             </div>
         </div>
     );

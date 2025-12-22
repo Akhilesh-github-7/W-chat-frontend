@@ -87,30 +87,30 @@ const MessageInput = ({ selectedChat, onSendMessage, onFileUpload }) => {
   };
 
   return (
-    <div className="sticky bottom-0 z-10 p-4 bg-gray-100 dark:bg-whatsapp-dark-bg-tertiary shadow-lg">
+    <div className="sticky bottom-0 z-10 p-4 bg-black/20 backdrop-blur-md">
       {previewImage && (
         <div className="relative mb-2 w-32 h-32">
-          <img src={previewImage} alt="Preview" className="w-full h-full object-cover rounded-lg" />
+          <img src={previewImage} alt="Preview" className="w-full h-full object-cover rounded-lg border border-white/30" />
           <button
             onClick={removePreviewImage}
-            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 text-xs"
+            className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1.5 text-xs shadow-lg hover:bg-red-700"
             aria-label="Remove image"
           >
             <BsXCircle />
           </button>
         </div>
       )}
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-3">
         <div className="relative">
           <button
-            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2 rounded-full"
+            className="text-cyan-300 hover:text-cyan-100 p-2 rounded-full transition-colors"
             onClick={() => setShowEmojiPicker((prev) => !prev)}
           >
             <BsEmojiSmile size={24} />
           </button>
           {showEmojiPicker && (
             <div className="absolute bottom-full left-0 mb-2">
-              <Picker onEmojiClick={onEmojiClick} theme="auto" />
+              <Picker onEmojiClick={onEmojiClick} theme="dark" pickerStyle={{ background: 'rgba(0,0,0,0.8)', border: '1px solid rgba(255,255,255,0.3)' }} />
             </div>
           )}
         </div>
@@ -123,13 +123,13 @@ const MessageInput = ({ selectedChat, onSendMessage, onFileUpload }) => {
         />
         <button
           onClick={() => fileInputRef.current.click()}
-          className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2 rounded-full"
+          className="text-cyan-300 hover:text-cyan-100 p-2 rounded-full transition-colors"
         >
           <BsPaperclip size={24} />
         </button>
 
         <textarea
-          className="flex-1 resize-none bg-white dark:bg-whatsapp-dark-bg-secondary text-gray-800 dark:text-gray-100 rounded-lg p-3 outline-none focus:ring-2 focus:ring-whatsapp-accent"
+          className="flex-1 resize-none bg-black/30 text-white placeholder-gray-400 rounded-lg p-3 outline-none focus:ring-2 focus:ring-cyan-400/50 border border-white/20"
           placeholder="Type a message..."
           rows="1"
           value={message}
@@ -138,7 +138,7 @@ const MessageInput = ({ selectedChat, onSendMessage, onFileUpload }) => {
         />
         <button
           onClick={handleSendMessage}
-          className="bg-whatsapp-accent hover:bg-green-600 text-white p-3 rounded-full transition duration-300 ease-in-out"
+          className="bg-cyan-500 hover:bg-cyan-400 text-white p-3 rounded-full transition-colors shadow-lg"
         >
           <BsSendFill size={20} />
         </button>

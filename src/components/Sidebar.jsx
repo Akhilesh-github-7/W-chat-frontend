@@ -152,23 +152,19 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
   return (
     <>
       {/* Sidebar */}
-      <div
-        className={`p-4
-        ${theme === 'dark' ? 'bg-whatsapp-dark-bg-secondary text-gray-100' : 'bg-gray-200 text-gray-800'}
-        flex flex-col h-full`}
-      >
+      <div className="bg-transparent text-white flex flex-col h-full p-4">
         {/* Profile and Theme Toggle */}
-        <div className="flex items-center justify-between pb-4 border-b border-gray-300 dark:border-gray-700">
+        <div className="flex items-center justify-between pb-4 border-b border-white/20">
           <div className="flex items-center cursor-pointer" onClick={onShowProfile}>
             <img
               src={getAvatarUrl(currentUser?.avatar)}
               alt="User Avatar"
-              className="w-10 h-10 rounded-full mr-3"
+              className="w-11 h-11 rounded-full mr-3 border-2 border-cyan-400/50"
             />
-            <span className="font-semibold">{currentUser?.name || 'My Profile'}</span>
+            <span className="font-bold text-lg">{currentUser?.name || 'My Profile'}</span>
           </div>
-          <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600">
-            {theme === 'dark' ? <BsSun size={20} /> : <BsMoon size={20} />}
+          <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-white/10 transition-colors">
+            {theme === 'dark' ? <BsSun size={22} className="text-yellow-300" /> : <BsMoon size={22} className="text-sky-300" />}
           </button>
         </div>
 
@@ -177,39 +173,39 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
           <input
             type="text"
             placeholder="Search or start new chat"
-            className={`w-full py-2 pl-10 pr-4 rounded-full outline-none
-              ${theme === 'dark' ? 'bg-whatsapp-dark-bg-tertiary text-gray-100' : 'bg-white text-gray-800'}`}
+            className="w-full py-2.5 pl-10 pr-4 rounded-full bg-black/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 border border-white/20"
             value={searchTerm}
             onChange={(e) => handleSearch(e.target.value)}
           />
-          <BsSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400" />
+          <BsSearch className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-400" />
         </div>
 
         {/* Search Results */}
         {searchTerm && (
           <div className="flex-1 overflow-y-auto custom-scrollbar mb-4">
-            <h2 className="text-lg font-bold mb-2">Search Results</h2>
+            <h2 className="text-xl font-bold mb-2 text-cyan-400">Search Results</h2>
             {loadingSearchResults ? (
-              <p>Searching users...</p>
+              <p className="text-gray-300">Searching users...</p>
             ) : searchResults.length === 0 ? (
-              <p>No users found.</p>
+              <p className="text-gray-400">No users found.</p>
             ) : (
               searchResults.map((user) => (
                 <div
                   key={user._id}
-                  className={`flex items-center p-3 rounded-lg cursor-pointer mb-2
-                    ${theme === 'dark' ? 'hover:bg-whatsapp-dark-bg-tertiary' : 'hover:bg-gray-300'}`}
+                  className="flex items-center p-3 rounded-lg cursor-pointer mb-2 hover:bg-black/30 transition-colors"
                   onClick={() => handleUserClick(user)}
                 >
-                  <img
-                    src={getAvatarUrl(user.avatar)}
-                    alt={`${user.name}'s avatar`}
-                    className="w-12 h-12 rounded-full mr-4"
-                  />
-                  {onlineUsers[user._id] && (
-                    <div className="absolute bottom-0 right-3 w-3 h-3 bg-green-500 rounded-full border-white border-2"></div>
-                  )}
-                  <h3 className="font-semibold">{user.name}</h3>
+                  <div className="relative">
+                    <img
+                      src={getAvatarUrl(user.avatar)}
+                      alt={`${user.name}'s avatar`}
+                      className="w-12 h-12 rounded-full mr-4"
+                    />
+                    {onlineUsers[user._id] && (
+                      <div className="absolute bottom-0 right-4 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-gray-800 shadow-[0_0_5px_#39FF14]"></div>
+                    )}
+                  </div>
+                  <h3 className="font-semibold text-lg">{user.name}</h3>
                 </div>
               ))
             )}
@@ -218,18 +214,16 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
 
         {/* Chats List */}
         <div className="flex-1 overflow-y-auto custom-scrollbar">
-          <h2 className="text-lg font-bold mb-2">My Chats</h2>
+          <h2 className="text-xl font-bold mb-2 text-cyan-400">My Chats</h2>
           {loadingChats ? (
-            <p>Loading chats...</p>
+            <p className="text-gray-300">Loading chats...</p>
           ) : filteredChats.length === 0 ? (
-            <p>No chats found.</p>
+            <p className="text-gray-400">No chats found.</p>
           ) : (
             filteredChats.map((chat) => {
               const otherUser = chat.users.find(u => u?._id !== currentUser._id);
               const isOnline = onlineUsers[otherUser?._id];
 
-              // If it's not a group chat and no other user is found, skip rendering this chat to prevent errors.
-              // This can happen if chat data is incomplete or corrupted.
               if (!chat.isGroupChat && !otherUser) {
                 console.warn("Skipping chat due to missing otherUser:", chat);
                 return null;
@@ -238,26 +232,25 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
               return (
                 <div
                   key={chat._id}
-                  className={`flex items-center p-3 rounded-lg cursor-pointer mb-2 relative
-                    ${theme === 'dark' ? 'hover:bg-whatsapp-dark-bg-tertiary' : 'hover:bg-gray-300'}`}
+                  className="flex items-center p-3 rounded-lg cursor-pointer mb-2 relative hover:bg-black/30 transition-colors"
                   onClick={() => handleChatClick(chat)}
                   onContextMenu={(e) => handleContextMenu(e, chat)}
                 >
-                  <div className="relative">
+                  <div className="relative mr-4">
                     <img
                       src={chat.isGroupChat ? "https://i.pravatar.cc/150?img=group.jpg" : getAvatarUrl(otherUser?.avatar)}
                       alt="Chat Avatar"
-                      className="w-12 h-12 rounded-full mr-4"
+                      className="w-12 h-12 rounded-full"
                     />
                     {!chat.isGroupChat && isOnline && (
-                      <div className="absolute bottom-0 right-3 w-3 h-3 bg-green-500 rounded-full border-white border-2"></div>
+                      <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-gray-800 shadow-[0_0_5px_#39FF14]"></div>
                     )}
                   </div>
                   <div className="flex-1">
                     <div className="flex justify-between items-center">
-                      <h3 className="font-semibold">{chat.isGroupChat ? chat.chatName : otherUser?.name || 'Unknown User'}</h3>
+                      <h3 className="font-semibold text-lg">{chat.isGroupChat ? chat.chatName : otherUser?.name || 'Unknown User'}</h3>
                     </div>
-                    <div className="flex justify-between items-center text-sm text-gray-600 dark:text-gray-400">
+                    <div className="flex justify-between items-center text-sm text-gray-400">
                       <p className="truncate w-40">{chat.latestMessage?.content || "No messages yet"}</p>
                     </div>
                   </div>

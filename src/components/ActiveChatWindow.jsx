@@ -183,10 +183,8 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
     }
 
     return (
-                <div
-                    className="h-full flex-1 flex flex-col bg-cover bg-center bg-no-repeat"
-                    style={{ backgroundImage: `url(${ChatBackground})` }}
-                >            <ChatHeader 
+        <div className="h-full flex-1 flex flex-col bg-transparent">
+            <ChatHeader 
                 contactName={contact?.name} 
                 contactAvatar={avatarSrc} 
                 isOnline={isContactOnline} 
