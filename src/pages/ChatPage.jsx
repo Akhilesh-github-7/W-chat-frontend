@@ -9,12 +9,21 @@ import Sidebar from '../components/Sidebar';
 import { useAuth } from '../context/AuthContext'; // Import useAuth
 import { useSocket } from '../context/SocketContext';
 
-const ChatPlaceholder = () => (
+const ChatPlaceholder = ({ theme }) => (
     <div className="flex-1 flex items-center justify-center bg-transparent">
         <div className="text-center">
-            <RiChat3Line className="mx-auto text-cyan-400/50" size={100} />
-            <h1 className="mt-4 text-4xl font-bold text-white/80">W-Chat Web</h1>
-            <p className="mt-2 text-xl text-white/60">
+            <RiChat3Line 
+                className={`mx-auto ${theme === 'dark' ? 'text-cyan-400/50' : 'text-gray-500/50'}`} 
+                size={100} 
+            />
+            <h1 
+                className={`mt-4 text-4xl font-bold ${theme === 'dark' ? 'text-white/80' : 'text-gray-800/80'}`}
+            >
+                W-Chat Web
+            </h1>
+            <p 
+                className={`mt-2 text-xl ${theme === 'dark' ? 'text-white/60' : 'text-gray-600/80'}`}
+            >
                 Select a chat to start messaging
             </p>
         </div>
@@ -155,21 +164,36 @@ const ChatPage = () => {
         }
     };
     
-    return (
-        <div className="h-screen w-full flex items-center justify-center bg-gray-900 font-inter">
-            {/* Background Gradient */}
-            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-500 via-cyan-500 to-blue-700 opacity-30 animate-gradient"></div>
+    const mainContainerStyle = theme === 'dark'
+        ? "relative w-11/12 h-[95vh] bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden flex"
+        : "relative w-11/12 h-[95vh] bg-white rounded-2xl shadow-2xl overflow-hidden flex";
+    
+    const leftPanelStyle = theme === 'dark'
+        ? `relative w-full md:w-1/3 md:max-w-md ${activeChat ? 'hidden md:flex' : 'flex'} flex-col flex-grow bg-black/20`
+        : `relative w-full md:w-1/3 md:max-w-md ${activeChat ? 'hidden md:flex' : 'flex'} flex-col flex-grow bg-gray-50`;
+    
+    const profilePanelStyle = theme === 'dark'
+    ? `absolute top-0 left-0 w-full h-full bg-transparent z-20 transform transition-transform duration-300 ease-in-out ${showProfile ? 'translate-x-0' : '-translate-x-full'}`
+    : `absolute top-0 left-0 w-full h-full bg-white z-20 transform transition-transform duration-300 ease-in-out ${showProfile ? 'translate-x-0' : '-translate-x-full'}`;
 
-            {/* Main container with glassmorphism */}
-            <div className="relative w-11/12 h-[95vh] bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden flex">
+    return (
+        <div className={`h-screen w-full flex items-center justify-center font-inter ${theme === 'dark' ? 'bg-black' : 'bg-gray-200'}`}>
+            {/* Background Gradient */}
+            <div 
+                className={`absolute top-0 left-0 w-full h-full animate-gradient 
+                    ${theme === 'dark' 
+                        ? 'bg-dark-gradient' 
+                        : 'bg-gradient-to-br from-blue-500 via-cyan-500 to-blue-700 opacity-30'
+                    }`
+                }
+            ></div>
+
+            {/* Main container */}
+            <div className={mainContainerStyle}>
                 {/* Left Panel Container */}
-                <div className={`relative w-full md:w-1/3 md:max-w-md ${activeChat ? 'hidden md:flex' : 'flex'} flex-col flex-grow bg-black/20`}>
+                <div className={leftPanelStyle}>
                     {/* Profile Panel (Sliding) */}
-                    <div
-                        className={`absolute top-0 left-0 w-full h-full bg-gray-800/80 backdrop-blur-md z-20 transform transition-transform duration-300 ease-in-out ${
-                            showProfile ? 'translate-x-0' : '-translate-x-full'
-                        }`}
-                    >
+                    <div className={profilePanelStyle}>
                         <ProfilePage
                             onCloseProfile={() => setShowProfile(false)}
                             onAvatarUpdate={handleAvatarUpdate}
@@ -196,7 +220,7 @@ const ChatPage = () => {
 
                 {/* Right Panel: Messaging View */}
                 <div className={`w-full md:w-2/3 ${activeChat ? 'flex' : 'hidden md:flex'} flex-col flex-grow`}>
-                    {activeChat ? <ActiveChatWindow chat={activeChat} currentUser={currentUser} onBack={() => setActiveChat(null)} onlineUsers={onlineUsers} /> : <ChatPlaceholder />}
+                    {activeChat ? <ActiveChatWindow chat={activeChat} currentUser={currentUser} onBack={() => setActiveChat(null)} onlineUsers={onlineUsers} /> : <ChatPlaceholder theme={theme} />}
                 </div>
             </div>
         </div>
