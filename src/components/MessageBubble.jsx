@@ -8,21 +8,19 @@ const MessageBubble = ({ message, currentUserId, onImageClick }) => { // sentByM
   const isRead = seenBy && seenBy.includes(currentUserId);
 
   return (
-    <div
-      className={`flex ${sentByMe ? 'justify-end' : 'justify-start'} mb-2`}
-    >
+    <div className={`flex ${sentByMe ? 'justify-end' : 'justify-start'} mb-3`}>
       <div
-        className={`relative max-w-[70%] px-3 py-2 rounded-lg shadow
+        className={`relative max-w-[70%] px-4 py-3 rounded-2xl shadow-lg
           ${sentByMe
-            ? 'bg-whatsapp-accent text-white rounded-br-none ml-auto'
-            : 'bg-gray-200 dark:bg-whatsapp-dark-bg-tertiary text-gray-900 dark:text-gray-100 rounded-bl-none mr-auto'
+            ? 'bg-white/20 backdrop-blur-md text-white rounded-br-none ml-auto border border-white/30'
+            : 'bg-black/20 backdrop-blur-md text-gray-200 rounded-bl-none mr-auto border border-white/20'
           }
         `}
       >
         {!sentByMe && (
-            <div className="text-xs font-semibold mb-1" style={{ color: sender.color || '#34B7F1' }}> {/* Example of dynamic color */}
-                {sender.name}
-            </div>
+          <div className="text-xs font-bold mb-1" style={{ color: sender.color || '#00FFFF' }}>
+            {sender.name}
+          </div>
         )}
         {message.file && (
           <div className="mt-2">
@@ -40,7 +38,7 @@ const MessageBubble = ({ message, currentUserId, onImageClick }) => { // sentByM
                 href={`${import.meta.env.VITE_API_URL}/uploads/${message.file.replace(/\\/g, '/')}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-500 underline"
+                className="text-cyan-400 underline"
               >
                 View Attachment
               </a>
@@ -48,10 +46,10 @@ const MessageBubble = ({ message, currentUserId, onImageClick }) => { // sentByM
           </div>
         )}
         <p className="text-sm break-words whitespace-pre-wrap">{content}</p>
-        <div className={`flex items-center justify-end text-xs mt-1 ${sentByMe ? 'text-gray-100' : 'text-gray-500 dark:text-gray-400'}`}>
+        <div className={`flex items-center justify-end text-xs mt-1 ${sentByMe ? 'text-gray-200' : 'text-gray-400'}`}>
           <span>{format(new Date(createdAt), 'p')}</span>
           {sentByMe && (
-            <BsCheckAll className={`ml-1 ${isRead ? 'text-blue-400' : 'text-gray-300'}`} />
+            <BsCheckAll className={`ml-1 ${isRead ? 'text-neon-cyan' : 'text-gray-300/70'}`} />
           )}
         </div>
       </div>

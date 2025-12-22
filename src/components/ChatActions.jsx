@@ -19,24 +19,18 @@ const ChatActions = ({ chat, position, onClose, onClearChat, onDeleteChat }) => 
   return (
     <div
       style={{ top: position.y, left: position.x }}
-      className={`absolute z-50 p-2 rounded-md shadow-lg ${
-        theme === 'dark' ? 'bg-whatsapp-dark-bg-tertiary' : 'bg-white'
-      }`}
+      className="absolute z-50 p-2 rounded-lg shadow-lg bg-black/30 backdrop-blur-xl border border-white/20"
       onClick={(e) => e.stopPropagation()}
     >
       <button
         onClick={handleClearChat}
-        className={`block w-full text-left px-4 py-2 text-sm rounded-md ${
-          theme === 'dark' ? 'text-gray-200 hover:bg-whatsapp-dark-bg-secondary' : 'text-gray-800 hover:bg-gray-200'
-        }`}
+        className="block w-full text-left px-4 py-2 text-sm rounded-md text-white hover:bg-white/10 transition-colors"
       >
         Clear Chat
       </button>
       <button
         onClick={handleDeleteChat}
-        className={`block w-full text-left px-4 py-2 text-sm rounded-md ${
-          theme === 'dark' ? 'text-red-500 hover:bg-whatsapp-dark-bg-secondary' : 'text-red-600 hover:bg-gray-200'
-        }`}
+        className="block w-full text-left px-4 py-2 text-sm rounded-md text-red-500 hover:bg-white/10 transition-colors"
       >
         Delete Chat
       </button>
