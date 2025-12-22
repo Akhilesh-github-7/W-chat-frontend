@@ -216,3 +216,19 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
         </div>
     );
 };
+
+// Add prop types validation
+ActiveChatWindow.propTypes = {
+    chat: PropTypes.shape({
+        _id: PropTypes.string.isRequired,
+        users: PropTypes.array.isRequired,
+        latestMessage: PropTypes.object,
+        messages: PropTypes.array,
+    }),
+    currentUser: PropTypes.object.isRequired,
+    onBack: PropTypes.func.isRequired,
+    onlineUsers: PropTypes.object.isRequired,
+};
+
+export default ActiveChatWindow;
+
