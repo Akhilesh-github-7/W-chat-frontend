@@ -1,4 +1,4 @@
-import profilePlaceholder from '../assets/images/profile placeholder.png';
+import profilePlaceholder from '../assets/images/profle placeholder.png';
 
 const getAvatarUrl = (avatarPath) => {
   if (!avatarPath) {
