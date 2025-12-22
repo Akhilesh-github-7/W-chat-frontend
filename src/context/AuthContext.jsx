@@ -26,6 +26,7 @@ export const AuthProvider = ({ children }) => {
 
   // Wrapper function to update currentUser state and sessionStorage
   const updateCurrentUser = (userData) => {
+    console.log('Updating currentUser with:', userData);
     setCurrentUser(userData);
     if (userData === undefined || userData === null) {
       sessionStorage.setItem('userInfo', 'null');
