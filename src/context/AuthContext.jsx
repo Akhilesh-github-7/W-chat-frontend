@@ -31,7 +31,9 @@ export const AuthProvider = ({ children }) => {
     if (userData === undefined || userData === null) {
       sessionStorage.setItem('userInfo', 'null');
     } else {
-      sessionStorage.setItem('userInfo', JSON.stringify(userData));
+      const userInfoString = JSON.stringify(userData);
+      sessionStorage.setItem('userInfo', userInfoString);
+      console.log('Stored in sessionStorage:', userInfoString);
     }
   };
 
