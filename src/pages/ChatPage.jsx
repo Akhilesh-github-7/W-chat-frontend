@@ -132,7 +132,7 @@ const ChatPage = () => {
     }, [socket, currentUser, setActiveChat, fetchChats]); // Add fetchChats to dependencies
 
     const handleAvatarUpdate = (relativeUrl) => {
-        updateCurrentUser(prevUser => ({ ...prevUser, avatar: relativeUrl }));
+        updateCurrentUser({ ...currentUser, avatar: relativeUrl });
         fetchChats();
     };
 
