@@ -12,11 +12,15 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(() => {
     try {
       const userInfoString = sessionStorage.getItem('userInfo');
+      console.log('AuthContext init - userInfoString:', userInfoString);
       // If userInfoString is "undefined" (the string), null, or empty, treat as null
       if (!userInfoString || userInfoString === 'undefined' || userInfoString === 'null') {
+        console.log('AuthContext init - returning null (userInfoString was empty/null/undefined)');
         return null;
       }
-      return JSON.parse(userInfoString);
+      const parsedUserInfo = JSON.parse(userInfoString);
+      console.log('AuthContext init - parsedUserInfo:', parsedUserInfo);
+      return parsedUserInfo;
     } catch (error) {
       console.error("Failed to parse userInfo from sessionStorage", error);
       return null;
@@ -26,14 +30,11 @@ export const AuthProvider = ({ children }) => {
 
   // Wrapper function to update currentUser state and sessionStorage
   const updateCurrentUser = (userData) => {
-    console.log('Updating currentUser with:', userData);
     setCurrentUser(userData);
     if (userData === undefined || userData === null) {
       sessionStorage.setItem('userInfo', 'null');
     } else {
-      const userInfoString = JSON.stringify(userData);
-      sessionStorage.setItem('userInfo', userInfoString);
-      console.log('Stored in sessionStorage:', userInfoString);
+      sessionStorage.setItem('userInfo', JSON.stringify(userData));
     }
   };
 
