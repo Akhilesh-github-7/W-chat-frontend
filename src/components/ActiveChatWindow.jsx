@@ -220,3 +220,5 @@ ActiveChatWindow.propTypes = {
     onlineUsers: PropTypes.object.isRequired,
 };
 
+export default ActiveChatWindow;
+
