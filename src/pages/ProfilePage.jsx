@@ -157,15 +157,7 @@ const ProfilePage = ({ onCloseProfile, onAvatarUpdate, avatar, user }) => {
           </SettingsSection>
 
           <SettingsSection title="App Settings">
-            <SettingsItem
-              icon={<BsMoon size={20} />}
-              label="Theme"
-              rightElement={
-                <div onClick={toggleTheme} className="cursor-pointer">
-                  {theme === 'dark' ? <BsToggleOn size={30} className="text-cyan-400" /> : <BsToggleOff size={30} className="text-gray-500" />}
-                </div>
-              }
-            />
+            
           </SettingsSection>
 
           <SettingsSection>

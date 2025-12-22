@@ -163,9 +163,6 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
             />
             <span className="font-bold text-lg">{currentUser?.name || 'My Profile'}</span>
           </div>
-          <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-white/10 transition-colors">
-            {theme === 'dark' ? <BsSun size={22} className="text-yellow-300" /> : <BsMoon size={22} className="text-sky-300" />}
-          </button>
         </div>
 
         {/* Search Bar */}
