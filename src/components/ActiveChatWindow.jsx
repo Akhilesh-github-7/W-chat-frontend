@@ -11,16 +11,15 @@ import ChatBackground from '../assets/images/Chat Background.jpg';
 import ImageViewer from './ImageViewer'; // Import ImageViewer
 
 const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
-    const { theme } = useTheme();
+    const { } = useTheme();
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
     const socket = useSocket();
-    const messagesEndRef = useRef(null);
+    const messagesEndRef = useRef(null); // Ref for auto-scrolling
 
+    // State for image viewer
     const [showImageViewer, setShowImageViewer] = useState(false);
     const [currentImage, setCurrentImage] = useState(null);
-
-    // ... (keep all other functions and useEffects as they are)
 
     const openImageViewer = (imageUrl) => {
         setCurrentImage(imageUrl);
@@ -170,43 +169,34 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
             return prevMessages;
         });
     };
-    
+
     const contact = chat.users.find(u => u._id !== currentUser?._id);
     const avatarSrc = getAvatarUrl(contact?.avatar);
-    const isContactOnline = onlineUsers[contact?._id];
+    const isContactOnline = onlineUsers[contact?._id]; // Determine online status here
 
     if (loading) {
         return (
             <div className="flex-1 flex items-center justify-center">
-                <p className={theme === 'dark' ? 'text-white' : 'text-gray-800'}>Loading messages...</p>
+                <p>Loading messages...</p>
             </div>
         );
     }
 
-    const chatWindowStyle = theme === 'dark'
-    ? "h-full flex-1 flex flex-col bg-transparent"
-    : "h-full flex-1 flex flex-col bg-gray-100";
-
-    const messagesContainerStyle = theme === 'light' 
-    ? { backgroundImage: `url(${ChatBackground})`, backgroundSize: 'cover' } 
-    : {};
-
     return (
-        <div className={chatWindowStyle}>
-            <ChatHeader 
+                <div
+                    className="h-full flex-1 flex flex-col bg-cover bg-center bg-no-repeat"
+                    style={{ backgroundImage: `url(${ChatBackground})` }}
+                >            <ChatHeader 
                 contactName={contact?.name} 
                 contactAvatar={avatarSrc} 
                 isOnline={isContactOnline} 
                 onBack={onBack} 
             />
-            <div 
-                className="flex-1 p-4 overflow-y-auto custom-scrollbar min-h-0"
-                style={messagesContainerStyle}
-            >
+            <div className="flex-1 p-4 overflow-y-auto custom-scrollbar min-h-0">
                 {messages.map(msg => (
                     <MessageBubble key={msg._id} message={msg} currentUserId={currentUser._id} onImageClick={openImageViewer} />
                 ))}
-                <div ref={messagesEndRef} />
+                <div ref={messagesEndRef} /> {/* For auto-scrolling */}
             </div>
             <MessageInput onSendMessage={handleSendMessage} onFileUpload={() => { }} selectedChat={chat} />
 
@@ -229,6 +219,4 @@ ActiveChatWindow.propTypes = {
     onBack: PropTypes.func.isRequired,
     onlineUsers: PropTypes.object.isRequired,
 };
-
-export default ActiveChatWindow;
 

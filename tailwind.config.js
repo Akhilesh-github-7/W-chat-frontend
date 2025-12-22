@@ -34,9 +34,6 @@ export default {
       animation: {
         gradient: 'gradient 15s ease infinite',
       },
-      backgroundImage: {
-        'dark-gradient': 'radial-gradient(circle, rgba(0,255,255,0.2) 0%, rgba(0,0,0,1) 70%)',
-      }
     },
   },
   plugins: [],
