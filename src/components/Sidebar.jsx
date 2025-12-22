@@ -149,19 +149,33 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
     }
   };
 
+  const sidebarBg = theme === 'dark' ? 'bg-transparent text-white' : 'bg-gray-100 text-gray-800';
+  const headerBorderStyle = theme === 'dark' ? 'border-white/20' : 'border-gray-300';
+  const profileNameStyle = theme === 'dark' ? 'font-bold text-lg' : 'font-semibold text-base';
+  const searchInputStyle = theme === 'dark' 
+    ? 'w-full py-2.5 pl-10 pr-4 rounded-full bg-black/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 border border-white/20'
+    : 'w-full py-2 pl-10 pr-4 rounded-full bg-white text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300';
+  const searchIconStyle = theme === 'dark' ? 'text-gray-400' : 'text-gray-500';
+  const searchResultsHeaderStyle = theme === 'dark' ? 'text-xl font-bold mb-2 text-cyan-400' : 'text-lg font-bold mb-2 text-gray-700';
+  const searchResultsTextStyle = theme === 'dark' ? 'text-gray-300' : 'text-gray-600';
+  const userItemHoverStyle = theme === 'dark' ? 'hover:bg-black/30' : 'hover:bg-gray-200';
+  const chatsHeaderStyle = theme === 'dark' ? 'text-xl font-bold mb-2 text-cyan-400' : 'text-lg font-bold mb-2 text-gray-700';
+  const chatNameStyle = theme === 'dark' ? 'font-semibold text-lg' : 'font-semibold';
+  const chatTextStyle = theme === 'dark' ? 'text-gray-400' : 'text-gray-600';
+
   return (
     <>
       {/* Sidebar */}
-      <div className="bg-transparent text-white flex flex-col h-full p-4">
+      <div className={`${sidebarBg} flex flex-col h-full p-4`}>
         {/* Profile and Theme Toggle */}
-        <div className="flex items-center justify-between pb-4 border-b border-white/20">
+        <div className={`flex items-center justify-between pb-4 border-b ${headerBorderStyle}`}>
           <div className="flex items-center cursor-pointer" onClick={onShowProfile}>
             <img
               src={getAvatarUrl(currentUser?.avatar)}
               alt="User Avatar"
-              className="w-11 h-11 rounded-full mr-3 border-2 border-cyan-400/50"
+              className={`w-11 h-11 rounded-full mr-3 border-2 ${theme === 'dark' ? 'border-cyan-400/50' : 'border-blue-500/50'}`}
             />
-            <span className="font-bold text-lg">{currentUser?.name || 'My Profile'}</span>
+            <span className={profileNameStyle}>{currentUser?.name || 'My Profile'}</span>
           </div>
           <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-white/10 transition-colors">
             {theme === 'dark' ? <BsSun size={22} className="text-yellow-300" /> : <BsMoon size={22} className="text-sky-300" />}
@@ -173,26 +187,26 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
           <input
             type="text"
             placeholder="Search or start new chat"
-            className="w-full py-2.5 pl-10 pr-4 rounded-full bg-black/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 border border-white/20"
+            className={searchInputStyle}
             value={searchTerm}
             onChange={(e) => handleSearch(e.target.value)}
           />
-          <BsSearch className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <BsSearch className={`absolute left-3.5 top-1/2 transform -translate-y-1/2 ${searchIconStyle}`} />
         </div>
 
         {/* Search Results */}
         {searchTerm && (
           <div className="flex-1 overflow-y-auto custom-scrollbar mb-4">
-            <h2 className="text-xl font-bold mb-2 text-cyan-400">Search Results</h2>
+            <h2 className={searchResultsHeaderStyle}>Search Results</h2>
             {loadingSearchResults ? (
-              <p className="text-gray-300">Searching users...</p>
+              <p className={searchResultsTextStyle}>Searching users...</p>
             ) : searchResults.length === 0 ? (
-              <p className="text-gray-400">No users found.</p>
+              <p className={searchResultsTextStyle}>No users found.</p>
             ) : (
               searchResults.map((user) => (
                 <div
                   key={user._id}
-                  className="flex items-center p-3 rounded-lg cursor-pointer mb-2 hover:bg-black/30 transition-colors"
+                  className={`flex items-center p-3 rounded-lg cursor-pointer mb-2 transition-colors ${userItemHoverStyle}`}
                   onClick={() => handleUserClick(user)}
                 >
                   <div className="relative">
@@ -202,10 +216,10 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
                       className="w-12 h-12 rounded-full mr-4"
                     />
                     {onlineUsers[user._id] && (
-                      <div className="absolute bottom-0 right-4 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-gray-800 shadow-[0_0_5px_#39FF14]"></div>
+                      <div className={`absolute bottom-0 right-4 w-3.5 h-3.5 bg-green-400 rounded-full border-2 ${theme === 'dark' ? 'border-gray-800 shadow-[0_0_5px_#39FF14]' : 'border-white'}`}></div>
                     )}
                   </div>
-                  <h3 className="font-semibold text-lg">{user.name}</h3>
+                  <h3 className={chatNameStyle}>{user.name}</h3>
                 </div>
               ))
             )}
@@ -214,11 +228,11 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
 
         {/* Chats List */}
         <div className="flex-1 overflow-y-auto custom-scrollbar">
-          <h2 className="text-xl font-bold mb-2 text-cyan-400">My Chats</h2>
+          <h2 className={chatsHeaderStyle}>My Chats</h2>
           {loadingChats ? (
-            <p className="text-gray-300">Loading chats...</p>
+            <p className={searchResultsTextStyle}>Loading chats...</p>
           ) : filteredChats.length === 0 ? (
-            <p className="text-gray-400">No chats found.</p>
+            <p className={searchResultsTextStyle}>No chats found.</p>
           ) : (
             filteredChats.map((chat) => {
               const otherUser = chat.users.find(u => u?._id !== currentUser._id);
@@ -232,7 +246,7 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
               return (
                 <div
                   key={chat._id}
-                  className="flex items-center p-3 rounded-lg cursor-pointer mb-2 relative hover:bg-black/30 transition-colors"
+                  className={`flex items-center p-3 rounded-lg cursor-pointer mb-2 relative transition-colors ${userItemHoverStyle}`}
                   onClick={() => handleChatClick(chat)}
                   onContextMenu={(e) => handleContextMenu(e, chat)}
                 >
@@ -243,14 +257,14 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
                       className="w-12 h-12 rounded-full"
                     />
                     {!chat.isGroupChat && isOnline && (
-                      <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-gray-800 shadow-[0_0_5px_#39FF14]"></div>
+                      <div className={`absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-400 rounded-full border-2 ${theme === 'dark' ? 'border-gray-800 shadow-[0_0_5px_#39FF14]' : 'border-white'}`}></div>
                     )}
                   </div>
                   <div className="flex-1">
                     <div className="flex justify-between items-center">
-                      <h3 className="font-semibold text-lg">{chat.isGroupChat ? chat.chatName : otherUser?.name || 'Unknown User'}</h3>
+                      <h3 className={chatNameStyle}>{chat.isGroupChat ? chat.chatName : otherUser?.name || 'Unknown User'}</h3>
                     </div>
-                    <div className="flex justify-between items-center text-sm text-gray-400">
+                    <div className={`flex justify-between items-center text-sm ${chatTextStyle}`}>
                       <p className="truncate w-40">{chat.latestMessage?.content || "No messages yet"}</p>
                     </div>
                   </div>

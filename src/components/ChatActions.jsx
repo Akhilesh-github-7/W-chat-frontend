@@ -16,21 +16,33 @@ const ChatActions = ({ chat, position, onClose, onClearChat, onDeleteChat }) => 
     onClose();
   };
 
+  const menuStyle = theme === 'dark'
+    ? "absolute z-50 p-2 rounded-lg shadow-lg bg-black/30 backdrop-blur-xl border border-white/20"
+    : "absolute z-50 p-2 rounded-lg shadow-lg bg-white border border-gray-200";
+  
+  const buttonStyle = theme === 'dark'
+    ? "block w-full text-left px-4 py-2 text-sm rounded-md text-white hover:bg-white/10 transition-colors"
+    : "block w-full text-left px-4 py-2 text-sm rounded-md text-gray-800 hover:bg-gray-100 transition-colors";
+  
+  const deleteButtonStyle = theme === 'dark'
+    ? "block w-full text-left px-4 py-2 text-sm rounded-md text-red-500 hover:bg-white/10 transition-colors"
+    : "block w-full text-left px-4 py-2 text-sm rounded-md text-red-600 hover:bg-gray-100 transition-colors";
+
   return (
     <div
       style={{ top: position.y, left: position.x }}
-      className="absolute z-50 p-2 rounded-lg shadow-lg bg-black/30 backdrop-blur-xl border border-white/20"
+      className={menuStyle}
       onClick={(e) => e.stopPropagation()}
     >
       <button
         onClick={handleClearChat}
-        className="block w-full text-left px-4 py-2 text-sm rounded-md text-white hover:bg-white/10 transition-colors"
+        className={buttonStyle}
       >
         Clear Chat
       </button>
       <button
         onClick={handleDeleteChat}
-        className="block w-full text-left px-4 py-2 text-sm rounded-md text-red-500 hover:bg-white/10 transition-colors"
+        className={deleteButtonStyle}
       >
         Delete Chat
       </button>
