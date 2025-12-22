@@ -12,15 +12,11 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(() => {
     try {
       const userInfoString = sessionStorage.getItem('userInfo');
-      console.log('AuthContext init - userInfoString:', userInfoString);
       // If userInfoString is "undefined" (the string), null, or empty, treat as null
       if (!userInfoString || userInfoString === 'undefined' || userInfoString === 'null') {
-        console.log('AuthContext init - returning null (userInfoString was empty/null/undefined)');
         return null;
       }
-      const parsedUserInfo = JSON.parse(userInfoString);
-      console.log('AuthContext init - parsedUserInfo:', parsedUserInfo);
-      return parsedUserInfo;
+      return JSON.parse(userInfoString);
     } catch (error) {
       console.error("Failed to parse userInfo from sessionStorage", error);
       return null;
