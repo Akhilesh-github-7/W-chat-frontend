@@ -22,7 +22,6 @@ const ChatPlaceholder = () => (
 );
 
 const ChatPage = () => {
-    console.log('ChatPage currentUser:', currentUser);
     const { theme } = useTheme();
     const [activeChat, setActiveChat] = useState(null);
     const [showProfile, setShowProfile] = useState(false);
@@ -31,6 +30,7 @@ const ChatPage = () => {
     const [onlineUsers, setOnlineUsers] = useState({});
     const { currentUser, updateCurrentUser, token } = useAuth(); // Use currentUser from AuthContext
     const socket = useSocket();
+    console.log('ChatPage currentUser:', currentUser);
 
     useEffect(() => {
         if (socket) {
