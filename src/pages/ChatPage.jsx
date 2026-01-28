@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BsThreeDotsVertical, BsSearch } from 'react-icons/bs';
 import { RiChat3Line } from 'react-icons/ri';
+import { useParams, useNavigate } from 'react-router-dom'; // Added
 import ActiveChatWindow from '../components/ActiveChatWindow';
 import ProfilePage from './ProfilePage'; // Import ProfilePage
 import { useTheme } from '../context/ThemeContext'; // Import useTheme
@@ -23,7 +24,9 @@ const ChatPlaceholder = () => (
 
 const ChatPage = () => {
     const { theme } = useTheme();
-    const [activeChat, setActiveChat] = useState(null);
+    const { chatId } = useParams(); // Get chatId from URL
+    const navigate = useNavigate(); // Get navigate function
+    const [activeChatObject, setActiveChatObject] = useState(null); // Add activeChatObject state
     const [showProfile, setShowProfile] = useState(false);
     const [chats, setChats] = useState([]);
     const [loadingChats, setLoadingChats] = useState(true);
@@ -58,7 +61,7 @@ const ChatPage = () => {
       }, [socket]);
 
     const handleSelectChat = (chat) => {
-        setActiveChat(chat);
+        navigate(`/chat/${chat._id}`);
     };
 
     const fetchChats = async () => {
@@ -72,10 +75,11 @@ const ChatPage = () => {
             const data = await response.json();
             if (response.ok) {
                 setChats(data);
-                if (activeChat) {
-                    const updatedActiveChat = data.find(c => c._id === activeChat._id);
+                // Update activeChatObject if a chat is currently active via URL
+                if (chatId) { // Check if chatId exists in URL
+                    const updatedActiveChat = data.find(c => c._id === chatId);
                     if (updatedActiveChat) {
-                        setActiveChat(updatedActiveChat);
+                        setActiveChatObject(updatedActiveChat);
                     }
                 }
             } else {
@@ -116,7 +120,7 @@ const ChatPage = () => {
             });
 
             // Also, update the active chat if it's the one receiving the message
-            setActiveChat(prevActiveChat => {
+            setActiveChatObject(prevActiveChat => {
                 if (prevActiveChat && prevActiveChat._id === newMessage.chat._id) {
                     // This ensures the message count and latest message updates in the ActiveChatWindow
                     return { ...prevActiveChat, latestMessage: newMessage, messages: [...(prevActiveChat.messages || []), newMessage] };
@@ -130,7 +134,7 @@ const ChatPage = () => {
         return () => {
             socket.off('msg-received', handleNewMessage);
         };
-    }, [socket, currentUser, setActiveChat, fetchChats]); // Add fetchChats to dependencies
+    }, [socket, currentUser, setActiveChatObject, fetchChats, chatId]); // Updated dependencies
 
     const handleAvatarUpdate = (relativeUrl) => {
         updateCurrentUser({ ...currentUser, avatar: relativeUrl });
@@ -196,8 +200,16 @@ const ChatPage = () => {
                 </div>
 
                 {/* Right Panel: Messaging View */}
-                <div className={`w-full md:w-2/3 ${activeChat ? 'flex' : 'hidden md:flex'} flex-col flex-grow`}>
-                    {activeChat ? <ActiveChatWindow chat={activeChat} currentUser={currentUser} onBack={() => setActiveChat(null)} onlineUsers={onlineUsers} /> : <ChatPlaceholder />}
+                <div className={`w-full md:w-2/3 ${chatId ? 'flex' : 'hidden md:flex'} flex-col flex-grow`}>
+                    {chatId && activeChatObject ? 
+                        <ActiveChatWindow 
+                            chat={activeChatObject} 
+                            currentUser={currentUser} 
+                            onBack={() => navigate('/chat')}
+                            onlineUsers={onlineUsers} 
+                        /> : 
+                        <ChatPlaceholder />
+                    }
                 </div>
             </div>
         </div>
