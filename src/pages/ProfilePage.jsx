@@ -138,16 +138,7 @@ const ProfilePage = ({ onCloseProfile, onAvatarUpdate, avatar, user }) => {
               rightElement={<BsChevronRight size={18} />}
               onClick={() => console.log('Navigate to Chats settings')}
             />
-            <SettingsItem
-              icon={<BsBell size={20} />}
-              label="Notifications"
-              rightElement={
-                <div className="flex items-center gap-2" onClick={handleNotificationsToggle}>
-                  <span className="text-gray-300">{notificationsOn ? 'On' : 'Off'}</span>
-                  <BsChevronRight size={18} />
-                </div>
-              }
-            />
+
             <SettingsItem
               icon={<BsDownload size={20} />}
               label="Storage and Data"

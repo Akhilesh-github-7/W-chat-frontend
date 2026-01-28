@@ -6,7 +6,7 @@ import { useTheme } from '../context/ThemeContext';
 import ChatHeader from './ChatHeader';
 import getAvatarUrl from '../utils/avatar';
 import { useSocket } from '../context/SocketContext';
-import notificationSound from '../assets/notification sound/mixkit-software-interface-start-2574.wav';
+
 import ChatBackground from '../assets/images/Chat Background.jpg';
 import ImageViewer from './ImageViewer'; // Import ImageViewer
 
@@ -114,7 +114,7 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
 
     useEffect(() => {
         if (socket && chat?._id && currentUser?._id) { // Ensure currentUser is available
-            const audio = new Audio(notificationSound); // Create Audio instance inside useEffect
+            
             socket.emit('join-chat', chat._id);
             socket.on('msg-received', (newMessage) => {
                 if (newMessage.chat._id === chat._id) {
