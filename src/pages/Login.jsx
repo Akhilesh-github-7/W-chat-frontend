@@ -43,7 +43,7 @@ const Login = () => {
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-500 via-cyan-500 to-blue-700 opacity-30 animate-gradient"></div>
 
       {/* Main container with glassmorphism */}
-      <div className="relative w-full max-w-md p-4 sm:p-8 rounded-2xl shadow-2xl bg-white/10 backdrop-blur-lg text-center h-svh sm:h-auto">
+      <div className="relative w-full max-w-md p-4 sm:p-8 rounded-none sm:rounded-2xl shadow-2xl bg-white/10 backdrop-blur-lg text-center h-svh sm:h-auto">
         <img src={logo} alt="Logo" className="mx-auto h-16 sm:h-20 md:h-24 mb-2" /> {/* Responsive logo height */}
         <p className="text-white text-xl sm:text-2xl font-script mb-6 sm:mb-8">Chat time? Lets go.</p>
 
