@@ -172,7 +172,7 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
 
     const contact = chat.users.find(u => u._id !== currentUser?._id);
     const avatarSrc = getAvatarUrl(contact?.avatar);
-    const isContactOnline = onlineUsers[contact?._id]; // Determine online status here
+    const isContactOnline = onlineUsers.includes(contact?._id); // Determine online status here
 
     if (loading) {
         return (
@@ -216,7 +216,7 @@ ActiveChatWindow.propTypes = {
     }),
     currentUser: PropTypes.object.isRequired,
     onBack: PropTypes.func.isRequired,
-    onlineUsers: PropTypes.object.isRequired,
+    onlineUsers: PropTypes.array.isRequired,
 };
 
 export default ActiveChatWindow;

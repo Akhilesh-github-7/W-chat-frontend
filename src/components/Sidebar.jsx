@@ -199,7 +199,7 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
                       alt={`${user.name}'s avatar`}
                       className="w-12 h-12 rounded-full mr-4"
                     />
-                    {onlineUsers[user._id] && (
+                    {onlineUsers.includes(user._id) && (
                       <div className="absolute bottom-0 right-4 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-gray-800 shadow-[0_0_5px_#39FF14]"></div>
                     )}
                   </div>
@@ -220,7 +220,7 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
           ) : (
             filteredChats.map((chat) => {
               const otherUser = chat.users.find(u => u?._id !== currentUser._id);
-              const isOnline = onlineUsers[otherUser?._id];
+              const isOnline = onlineUsers.includes(otherUser?._id);
 
               if (!chat.isGroupChat && !otherUser) {
                 console.warn("Skipping chat due to missing otherUser:", chat);

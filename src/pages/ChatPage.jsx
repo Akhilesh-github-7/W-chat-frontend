@@ -27,35 +27,8 @@ const ChatPage = () => {
     const [showProfile, setShowProfile] = useState(false);
     const [chats, setChats] = useState([]);
     const [loadingChats, setLoadingChats] = useState(true);
-    const [onlineUsers, setOnlineUsers] = useState({});
-    const { currentUser, updateCurrentUser, token } = useAuth(); // Use currentUser from AuthContext
-    const socket = useSocket();
+    const { socket, onlineUsers } = useSocket(); // Get socket and onlineUsers from SocketContext
     console.log('ChatPage currentUser:', currentUser);
-
-    useEffect(() => {
-        if (socket) {
-          socket.on('get-online-users', (onlineUserIds) => {
-            const onlineUsersObj = onlineUserIds.reduce((acc, userId) => {
-              acc[userId] = true;
-              return acc;
-            }, {});
-            setOnlineUsers(onlineUsersObj);
-          });
-
-          socket.on('user-online', (userId) => {
-            setOnlineUsers((prev) => ({ ...prev, [userId]: true }));
-          });
-          socket.on('user-offline', (userId) => {
-            setOnlineUsers((prev) => ({ ...prev, [userId]: false }));
-          });
-
-          return () => {
-            socket.off('get-online-users');
-            socket.off('user-online');
-            socket.off('user-offline');
-          };
-        }
-      }, [socket]);
 
     const handleSelectChat = (chat) => {
         setActiveChat(chat);
