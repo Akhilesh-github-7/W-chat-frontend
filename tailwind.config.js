@@ -34,6 +34,12 @@ export default {
       animation: {
         gradient: 'gradient 15s ease infinite',
       },
+      height: {
+        svh: '100svh',
+      },
+      width: {
+        dvw: '100dvw',
+      },
     },
   },
   plugins: [],

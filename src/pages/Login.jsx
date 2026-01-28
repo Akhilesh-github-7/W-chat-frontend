@@ -45,7 +45,7 @@ const Login = () => {
     >
       <div className="w-full max-w-md p-4 sm:p-8 rounded-lg shadow-2xl bg-opacity-80 backdrop-blur-sm text-center">
         <img src={logo} alt="Logo" className="mx-auto h-16 sm:h-20 md:h-24 mb-2" /> {/* Responsive logo height */}
-        <p className="text-blue-200 text-xl sm:text-2xl font-script mb-6 sm:mb-8">Chat time? Let's go.</p>
+        <p className="text-blue-200 text-xl sm:text-2xl font-script mb-6 sm:mb-8">Chat time? Lets go.</p>
 
 
         <form onSubmit={handleSignIn} className="space-y-4 sm:space-y-6"> {/* Responsive vertical spacing */}
@@ -102,7 +102,7 @@ const Login = () => {
 
         {/* Register Link */}
         <p className="mt-8 text-gray-400 text-sm">
-          Don't have account?{' '}
+          Do not have account?{' '}
           <a
             href="#"
             onClick={() => navigate('/register')}
