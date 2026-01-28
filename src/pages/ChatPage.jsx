@@ -22,6 +22,7 @@ const ChatPlaceholder = () => (
 );
 
 const ChatPage = () => {
+    console.log('ChatPage currentUser:', currentUser);
     const { theme } = useTheme();
     const [activeChat, setActiveChat] = useState(null);
     const [showProfile, setShowProfile] = useState(false);
