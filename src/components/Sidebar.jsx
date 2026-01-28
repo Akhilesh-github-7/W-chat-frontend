@@ -5,7 +5,6 @@ import getAvatarUrl from '../utils/avatar';
 import { useSocket } from '../context/SocketContext';
 import ChatActions from './ChatActions';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom'; // Add this import
 
 
 const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats, onChatCreated,onChatDeleted, onChatCleared, onlineUsers }) => {
@@ -15,7 +14,6 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
   const [searchResults, setSearchResults] = useState([]);
   const [loadingSearchResults, setLoadingSearchResults] = useState(false);
   const socket = useSocket();
-  const navigate = useNavigate(); // Add this line
   const [contextMenu, setContextMenu] = useState({
     visible: false,
     chat: null,
@@ -71,7 +69,7 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
   );
   
   const handleChatClick = (chat) => {
-    navigate(`/chat/${chat._id}`); // Navigate to new URL
+    onSelectChat(chat);
   };
 
   const handleUserClick = async (user) => {

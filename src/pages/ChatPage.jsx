@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BsThreeDotsVertical, BsSearch } from 'react-icons/bs';
 import { RiChat3Line } from 'react-icons/ri';
-import { useParams, useNavigate } from 'react-router-dom'; // Added
 import ActiveChatWindow from '../components/ActiveChatWindow';
 import ProfilePage from './ProfilePage'; // Import ProfilePage
 import { useTheme } from '../context/ThemeContext'; // Import useTheme
@@ -24,9 +23,7 @@ const ChatPlaceholder = () => (
 
 const ChatPage = () => {
     const { theme } = useTheme();
-    const { chatId } = useParams(); // Get chatId from URL
-    const navigate = useNavigate(); // Get navigate function
-    const [activeChatObject, setActiveChatObject] = useState(null); // Add activeChatObject state
+    const [activeChat, setActiveChat] = useState(null);
     const [showProfile, setShowProfile] = useState(false);
     const [chats, setChats] = useState([]);
     const [loadingChats, setLoadingChats] = useState(true);
@@ -44,14 +41,14 @@ const ChatPage = () => {
             }, {});
             setOnlineUsers(onlineUsersObj);
           });
-    
+
           socket.on('user-online', (userId) => {
             setOnlineUsers((prev) => ({ ...prev, [userId]: true }));
           });
           socket.on('user-offline', (userId) => {
             setOnlineUsers((prev) => ({ ...prev, [userId]: false }));
           });
-    
+
           return () => {
             socket.off('get-online-users');
             socket.off('user-online');
@@ -61,7 +58,7 @@ const ChatPage = () => {
       }, [socket]);
 
     const handleSelectChat = (chat) => {
-        navigate(`/chat/${chat._id}`);
+        setActiveChat(chat);
     };
 
     const fetchChats = async () => {
@@ -75,11 +72,10 @@ const ChatPage = () => {
             const data = await response.json();
             if (response.ok) {
                 setChats(data);
-                // Update activeChatObject if a chat is currently active via URL
-                if (chatId) { // Check if chatId exists in URL
-                    const updatedActiveChat = data.find(c => c._id === chatId);
+                if (activeChat) {
+                    const updatedActiveChat = data.find(c => c._id === activeChat._id);
                     if (updatedActiveChat) {
-                        setActiveChatObject(updatedActiveChat);
+                        setActiveChat(updatedActiveChat);
                     }
                 }
             } else {
@@ -105,7 +101,7 @@ const ChatPage = () => {
         const handleNewMessage = (newMessage) => {
             setChats(prevChats => {
                 const chatIndex = prevChats.findIndex(c => c._id === newMessage.chat._id);
-        
+
                 if (chatIndex > -1) {
                     // Chat exists, update its latestMessage and move to top
                     const updatedChat = { ...prevChats[chatIndex], latestMessage: newMessage };
@@ -120,10 +116,10 @@ const ChatPage = () => {
             });
 
             // Also, update the active chat if it's the one receiving the message
-            setActiveChatObject(prevActiveChat => {
+            setActiveChat(prevActiveChat => {
                 if (prevActiveChat && prevActiveChat._id === newMessage.chat._id) {
                     // This ensures the message count and latest message updates in the ActiveChatWindow
-                    return { ...prevActiveChat, latestMessage: newMessage, messages: [...(prevActiveChat.messages || []), newMessage] };
+                    return { ...prevActiveChat, latestMessage: newMessage, messages: [...(prevActiveChat.messages || []), newMessage] };  
                 }
                 return prevActiveChat;
             });
@@ -134,32 +130,32 @@ const ChatPage = () => {
         return () => {
             socket.off('msg-received', handleNewMessage);
         };
-    }, [socket, currentUser, setActiveChatObject, fetchChats, chatId]); // Updated dependencies
+    }, [socket, currentUser, setActiveChat, fetchChats]); // Add fetchChats to dependencies
 
     const handleAvatarUpdate = (relativeUrl) => {
         updateCurrentUser({ ...currentUser, avatar: relativeUrl });
         fetchChats();
     };
 
-    const handleChatDeleted = (chatIdToDelete) => {
-        setChats(prevChats => prevChats.filter(chat => chat._id !== chatIdToDelete));
-        if (chatId === chatIdToDelete) {
-            navigate('/chat');
+    const handleChatDeleted = (chatId) => {
+        setChats(prevChats => prevChats.filter(chat => chat._id !== chatId));
+        if (activeChat?._id === chatId) {
+            setActiveChat(null);
         }
     };
-    
-    const handleChatCleared = (chatIdToClear) => {
+
+    const handleChatCleared = (chatId) => {
         setChats(prevChats =>
             prevChats.map(chat =>
-                chat._id === chatIdToClear ? { ...chat, latestMessage: null } : chat
+                chat._id === chatId ? { ...chat, latestMessage: null } : chat
             )
         );
         // If the cleared chat is the active chat, refresh the chat window
-        if (chatId === chatIdToClear) {
-            setActiveChatObject(prev => ({ ...prev, messages: [] , latestMessage: null}));
+        if (activeChat?._id === chatId) {
+            setActiveChat(prev => ({ ...prev, messages: [] , latestMessage: null}));
         }
     };
-    
+
     return (
         <div className="h-svh w-dvw flex items-center justify-center bg-gray-900 font-inter">
             {/* Background Gradient */}
@@ -168,7 +164,7 @@ const ChatPage = () => {
             {/* Main container with glassmorphism */}
             <div className="relative w-full sm:w-11/12 h-svh sm:h-[95svh] bg-white/10 backdrop-blur-lg rounded-none sm:rounded-2xl shadow-2xl overflow-hidden flex">
                 {/* Left Panel Container */}
-                <div className={`relative w-full md:w-1/3 md:max-w-md ${chatId ? 'hidden md:flex' : 'flex'} flex-col flex-grow bg-black/20`}>
+                <div className={`relative w-full md:w-1/3 md:max-w-md ${activeChat ? 'hidden md:flex' : 'flex'} flex-col flex-grow bg-black/20`}>
                     {/* Profile Panel (Sliding) */}
                     <div
                         className={`absolute top-0 left-0 w-full h-full bg-gray-800/80 backdrop-blur-md z-20 transform transition-transform duration-300 ease-in-out ${
@@ -200,16 +196,8 @@ const ChatPage = () => {
                 </div>
 
                 {/* Right Panel: Messaging View */}
-                <div className={`w-full md:w-2/3 ${chatId ? 'flex' : 'hidden md:flex'} flex-col flex-grow`}>
-                    {chatId && activeChatObject ? 
-                        <ActiveChatWindow 
-                            chat={activeChatObject} 
-                            currentUser={currentUser} 
-                            onBack={() => navigate('/chat')}
-                            onlineUsers={onlineUsers} 
-                        /> : 
-                        <ChatPlaceholder />
-                    }
+                <div className={`w-full md:w-2/3 ${activeChat ? 'flex' : 'hidden md:flex'} flex-col flex-grow`}>
+                    {activeChat ? <ActiveChatWindow chat={activeChat} currentUser={currentUser} onBack={() => setActiveChat(null)} onlineUsers={onlineUsers} /> : <ChatPlaceholder />}
                 </div>
             </div>
         </div>
