@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext';
 
 
 const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats, onChatCreated,onChatDeleted, onChatCleared, onlineUsers }) => {
+  console.log('Sidebar currentUser:', currentUser);
   const { theme, toggleTheme } = useTheme();
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);

@@ -51,7 +51,7 @@ const Register = () => {
       {/* Main container with glassmorphism */}
       <div className="relative w-full max-w-md p-4 sm:p-8 rounded-2xl shadow-2xl bg-white/10 backdrop-blur-lg text-center">
         <img src={logo} alt="Logo" className="mx-auto h-16 sm:h-20 md:h-24 mb-2" /> {/* Responsive logo height */}
-        <p className="text-blue-200 text-xl sm:text-2xl font-script mb-6 sm:mb-8">Powered by people. Connected by you</p>
+        <p className="text-white text-xl sm:text-2xl font-script mb-6 sm:mb-8">Powered by people. Connected by you</p>
 
 
         <form onSubmit={handleSignUp} className="space-y-4 sm:space-y-6"> {/* Responsive vertical spacing */}
