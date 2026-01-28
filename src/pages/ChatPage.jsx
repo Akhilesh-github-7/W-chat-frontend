@@ -141,22 +141,22 @@ const ChatPage = () => {
         fetchChats();
     };
 
-    const handleChatDeleted = (chatId) => {
-        setChats(prevChats => prevChats.filter(chat => chat._id !== chatId));
-        if (activeChat?._id === chatId) {
-            setActiveChat(null);
+    const handleChatDeleted = (chatIdToDelete) => {
+        setChats(prevChats => prevChats.filter(chat => chat._id !== chatIdToDelete));
+        if (chatId === chatIdToDelete) {
+            navigate('/chat');
         }
     };
     
-    const handleChatCleared = (chatId) => {
+    const handleChatCleared = (chatIdToClear) => {
         setChats(prevChats =>
             prevChats.map(chat =>
-                chat._id === chatId ? { ...chat, latestMessage: null } : chat
+                chat._id === chatIdToClear ? { ...chat, latestMessage: null } : chat
             )
         );
         // If the cleared chat is the active chat, refresh the chat window
-        if (activeChat?._id === chatId) {
-            setActiveChat(prev => ({ ...prev, messages: [] , latestMessage: null}));
+        if (chatId === chatIdToClear) {
+            setActiveChatObject(prev => ({ ...prev, messages: [] , latestMessage: null}));
         }
     };
     
@@ -168,7 +168,7 @@ const ChatPage = () => {
             {/* Main container with glassmorphism */}
             <div className="relative w-full sm:w-11/12 h-svh sm:h-[95svh] bg-white/10 backdrop-blur-lg rounded-none sm:rounded-2xl shadow-2xl overflow-hidden flex">
                 {/* Left Panel Container */}
-                <div className={`relative w-full md:w-1/3 md:max-w-md ${activeChat ? 'hidden md:flex' : 'flex'} flex-col flex-grow bg-black/20`}>
+                <div className={`relative w-full md:w-1/3 md:max-w-md ${chatId ? 'hidden md:flex' : 'flex'} flex-col flex-grow bg-black/20`}>
                     {/* Profile Panel (Sliding) */}
                     <div
                         className={`absolute top-0 left-0 w-full h-full bg-gray-800/80 backdrop-blur-md z-20 transform transition-transform duration-300 ease-in-out ${
