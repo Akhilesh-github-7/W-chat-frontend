@@ -27,6 +27,7 @@ const ChatPage = () => {
     const [showProfile, setShowProfile] = useState(false);
     const [chats, setChats] = useState([]);
     const [loadingChats, setLoadingChats] = useState(true);
+    const { token, currentUser, updateCurrentUser } = useAuth(); // Import useAuth
     const { socket, onlineUsers } = useSocket(); // Get socket and onlineUsers from SocketContext
     console.log('ChatPage currentUser:', currentUser);
 
