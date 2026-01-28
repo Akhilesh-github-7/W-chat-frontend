@@ -14,7 +14,7 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
     const { } = useTheme();
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
-    const socket = useSocket();
+    const { socket } = useSocket();
     const messagesEndRef = useRef(null); // Ref for auto-scrolling
 
     // State for image viewer
