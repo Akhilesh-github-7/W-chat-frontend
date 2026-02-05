@@ -29,10 +29,16 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
         setShowImageViewer(false);
     };
 
-    // Auto-scroll to bottom of messages
+    // Auto-scroll to bottom of messages - Refined to prevent parent container from shifting
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages, chat]);
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ 
+                behavior: "auto", 
+                block: "end",
+                inline: "nearest"
+            });
+        }
+    }, [messages, chat?._id]);
 
     const fetchMessages = useCallback(async () => {
         if (chat?._id && currentUser?._id) {

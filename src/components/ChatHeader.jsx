@@ -8,7 +8,7 @@ const ChatHeader = ({ contactName, contactAvatar, isOnline, onBack }) => {
 
   return (
     <div
-      className="sticky top-0 z-10 p-3 px-6 flex items-center bg-white/5 backdrop-blur-xl border-b border-white/10 shadow-lg"
+      className="p-3 px-6 flex items-center bg-white/5 backdrop-blur-xl border-b border-white/10 shadow-lg z-10"
     >
       <button 
         onClick={onBack} 
