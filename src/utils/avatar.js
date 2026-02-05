@@ -23,6 +23,11 @@ const getAvatarUrl = (avatarPath) => {
   // Clean the path - remove leading slashes
   const cleanPath = avatarPath.startsWith('/') ? avatarPath.substring(1) : avatarPath;
 
+  // If the path starts with 'avatars/', prepend 'uploads/'
+  if (cleanPath.startsWith('avatars/')) {
+    return `${baseUrl}/uploads/${cleanPath}`;
+  }
+
   // If the path already includes 'uploads/', handle it
   if (cleanPath.startsWith('uploads/')) {
     return `${baseUrl}/${cleanPath}`;
