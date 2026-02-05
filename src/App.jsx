@@ -6,18 +6,22 @@ import Sidebar from './components/Sidebar';
 import ChatWindow from './components/ChatWindow';
 import ProfilePage from './pages/ProfilePage';
 import ChatPage from "./pages/ChatPage"; // Import the new ChatPage
+import ToastProvider from './components/ToastProvider';
 
 function App() {
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route
-        path="/chat"
-        element={<ChatPage />} // Render ChatPage here
-      />
-      <Route path="*" element={<Navigate to="/login" />} />
-    </Routes>
+    <>
+      <ToastProvider />
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/chat"
+          element={<ChatPage />} // Render ChatPage here
+        />
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
+    </>
   );
 }
 

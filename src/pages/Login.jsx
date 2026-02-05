@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { BsPersonFill, BsLockFill, BsEyeFill, BsEyeSlashFill } from 'react-icons/bs';
 import logo from '../assets/images/logo.png';
 import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -11,12 +12,10 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
   const { login } = useAuth();
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-    setError('');
     setIsLoading(true);
 
     try {
@@ -32,13 +31,14 @@ const Login = () => {
 
       if (response.ok) {
         login(data.token, data);
+        toast.success('Welcome back!');
         navigate('/chat');
       } else {
-        setError(data.message || 'Invalid username or password');
+        toast.error(data.message || 'Invalid username or password');
       }
     } catch (error) {
       console.error('Login error:', error);
-      setError('Connection lost. Please try again later.');
+      toast.error('Connection lost. Please try again later.');
     } finally {
       setIsLoading(false);
     }
@@ -60,12 +60,6 @@ const Login = () => {
           <h1 className="text-white text-3xl sm:text-4xl font-bold tracking-tight mb-2">Welcome Back</h1>
           <p className="text-gray-400 text-sm sm:text-base font-script">Chat time? Lets go.</p>
         </div>
-
-        {error && (
-          <div className="mb-6 p-3 rounded-lg bg-red-500/20 border border-red-500/50 text-red-200 text-sm animate-shake">
-            {error}
-          </div>
-        )}
 
         <form onSubmit={handleSignIn} className="space-y-5 sm:space-y-6">
           {/* Username Input */}

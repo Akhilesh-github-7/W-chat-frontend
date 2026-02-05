@@ -5,6 +5,7 @@ import getAvatarUrl from '../utils/avatar';
 import { useSocket } from '../context/SocketContext';
 import ChatActions from './ChatActions';
 import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 
 const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats, onChatCreated,onChatDeleted, onChatCleared, onlineUsers, activeChat }) => {
@@ -55,9 +56,11 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
         setSearchResults(data);
       } else {
         console.error('Failed to search users:', data.message);
+        toast.error('Failed to find users');
       }
     } catch (error) {
       console.error('Error searching users:', error);
+      toast.error('Network error while searching');
     } finally {
       setLoadingSearchResults(false);
     }
@@ -89,11 +92,14 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
         onSelectChat(data); // Pass the chat to the parent component
         setSearchTerm(''); // Clear search term
         setSearchResults([]); // Clear search results
+        toast.success('Chat started successfully');
       } else {
         console.error('Failed to access/create chat:', data.message);
+        toast.error(data.message || 'Failed to start chat');
       }
     } catch (error) {
       console.error('Error accessing/creating chat:', error);
+      toast.error('Unable to connect to server');
     }
   };
 
@@ -118,13 +124,13 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
       const data = await response.json();
       if (response.ok) {
         onChatCleared(chatId);
-        alert('Chat cleared successfully');
+        toast.success('Chat cleared successfully');
       } else {
-        alert(`Failed to clear chat: ${data.message}`);
+        toast.error(`Failed to clear chat: ${data.message}`);
       }
     } catch (error) {
       console.error('Error clearing chat:', error);
-      alert('An error occurred while clearing the chat.');
+      toast.error('An error occurred while clearing the chat.');
     }
   };
 
@@ -140,13 +146,13 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
       const data = await response.json();
       if (response.ok) {
         onChatDeleted(chatId);
-        alert('Chat deleted successfully');
+        toast.success('Chat deleted successfully');
       } else {
-        alert(`Failed to delete chat: ${data.message}`);
+        toast.error(`Failed to delete chat: ${data.message}`);
       }
     } catch (error) {
       console.error('Error deleting chat:', error);
-      alert('An error occurred while deleting the chat.');
+      toast.error('An error occurred while deleting the chat.');
     }
   };
 
