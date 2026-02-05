@@ -1,21 +1,19 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import PropTypes from 'prop-types'; // Import PropTypes
+import PropTypes from 'prop-types';
 import MessageBubble from './MessageBubble';
 import MessageInput from './MessageInput';
 import { useTheme } from '../context/ThemeContext';
 import ChatHeader from './ChatHeader';
 import getAvatarUrl from '../utils/avatar';
 import { useSocket } from '../context/SocketContext';
-
-import ChatBackground from '../assets/images/Chat Background.jpg';
-import ImageViewer from './ImageViewer'; // Import ImageViewer
+import ImageViewer from './ImageViewer';
 
 const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
     const { } = useTheme();
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
     const { socket } = useSocket();
-    const messagesEndRef = useRef(null); // Ref for auto-scrolling
+    const messagesEndRef = useRef(null);
 
     // State for image viewer
     const [showImageViewer, setShowImageViewer] = useState(false);
@@ -37,7 +35,7 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
     }, [messages, chat]);
 
     const fetchMessages = useCallback(async () => {
-        if (chat?._id && currentUser?._id) { // Ensure currentUser is available
+        if (chat?._id && currentUser?._id) {
             setLoading(true);
             try {
                 const token = sessionStorage.getItem('token');
@@ -50,7 +48,6 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
                 if (response.ok) {
                     const messagesWithSentByMe = data.messages.map(msg => {
                         const sentByMe = msg.sender._id === currentUser._id;
-                        console.log('fetchMessages - BEFORE SET: Message sender ID:', msg.sender._id, 'Current user ID:', currentUser._id, 'Calculated Sent by me:', sentByMe);
                         return {
                             ...msg,
                             sentByMe: sentByMe
@@ -66,7 +63,7 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
                 setLoading(false);
             }
         }
-    }, [chat?._id, currentUser?._id]); // Dependencies for useCallback
+    }, [chat?._id, currentUser?._id]);
 
     useEffect(() => {
         fetchMessages();
@@ -83,8 +80,6 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
     useEffect(() => {
         if (currentUser && chat && messages.length > 0) {
             messages.forEach(async (msg) => {
-                // If it's a message from someone else, and current user hasn't seen it
-                // And it's not a message sent by the current user (to avoid marking own message as seen by self for blue tick logic)
                 if (msg.sender._id !== currentUser._id && !msg.seenBy.includes(currentUser._id)) {
                     try {
                         const token = sessionStorage.getItem('token');
@@ -96,7 +91,6 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
                             },
                             body: JSON.stringify({ messageId: msg._id })
                         });
-                        // Optimistically update seenBy for current user's view
                         setMessages(prevMessages => 
                             prevMessages.map(m => 
                                 m._id === msg._id && !m.seenBy.includes(currentUser._id) 
@@ -110,25 +104,20 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
                 }
             });
         }
-    }, [messages, chat, currentUser]); // Rerun when messages, chat, or current user changes
+    }, [messages, chat, currentUser]);
 
     useEffect(() => {
-        if (socket && chat?._id && currentUser?._id) { // Ensure currentUser is available
+        if (socket && chat?._id && currentUser?._id) {
             
             socket.emit('join-chat', chat._id);
             socket.on('msg-received', (newMessage) => {
                 if (newMessage.chat._id === chat._id) {
-                    if (newMessage.sender._id !== currentUser._id) {
-                        audio.play();
-                    }
                     setMessages((prevMessages) => {
                         const sentByMe = newMessage.sender._id === currentUser._id;
-                        console.log('msg-received - BEFORE SET: New Message sender ID:', newMessage.sender._id, 'Current user ID:', currentUser._id, 'Calculated Sent by me:', sentByMe);
                         const messageWithSentByMe = {
                             ...newMessage,
                             sentByMe: sentByMe
                         };
-                        // Prevent duplicates if the message is already there
                         if (!prevMessages.some(msg => msg._id === messageWithSentByMe._id)) {
                             return [...prevMessages, messageWithSentByMe];
                         }
@@ -158,7 +147,6 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
     const handleSendMessage = (newMessage) => {
         setMessages((prevMessages) => {
             const sentByMe = newMessage.sender._id === currentUser._id;
-            console.log('handleSendMessage - BEFORE SET: New Message sender ID:', newMessage.sender._id, 'Current user ID:', currentUser._id, 'Calculated Sent by me:', sentByMe);
             const messageWithSentByMe = {
                 ...newMessage,
                 sentByMe: sentByMe
@@ -172,31 +160,42 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
 
     const contact = chat.users.find(u => u._id !== currentUser?._id);
     const avatarSrc = getAvatarUrl(contact?.avatar);
-    const isContactOnline = onlineUsers.includes(contact?._id); // Determine online status here
-
-    if (loading) {
-        return (
-            <div className="flex-1 flex items-center justify-center">
-                <p>Loading messages...</p>
-            </div>
-        );
-    }
+    const isContactOnline = onlineUsers.includes(contact?._id);
 
     return (
-        <div
-            className="h-full flex-1 flex flex-col bg-transparent"
-        >            <ChatHeader 
+        <div className="h-full flex-1 flex flex-col bg-transparent relative">
+             <ChatHeader 
                 contactName={contact?.name} 
                 contactAvatar={avatarSrc} 
                 isOnline={isContactOnline} 
                 onBack={onBack} 
             />
-            <div className="flex-1 p-4 overflow-y-auto custom-scrollbar min-h-0">
-                {messages.map(msg => (
-                    <MessageBubble key={msg._id} message={msg} currentUserId={currentUser._id} onImageClick={openImageViewer} />
-                ))}
-                <div ref={messagesEndRef} /> {/* For auto-scrolling */}
+            
+            <div className="flex-1 p-4 overflow-y-auto custom-scrollbar min-h-0 relative scroll-smooth">
+                {loading ? (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center space-y-4">
+                        <div className="w-12 h-12 border-4 border-neon-blue/30 border-t-neon-blue rounded-full animate-spin"></div>
+                        <p className="text-gray-400 font-medium animate-pulse">Loading conversation...</p>
+                    </div>
+                ) : (
+                    <>
+                        {messages.length === 0 && (
+                             <div className="flex flex-col items-center justify-center h-full text-center p-8 opacity-60">
+                                <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                                    <span className="text-4xl">👋</span>
+                                </div>
+                                <h3 className="text-xl font-bold text-white mb-2">No messages yet</h3>
+                                <p className="text-gray-400">Send a message to start the conversation!</p>
+                            </div>
+                        )}
+                        {messages.map(msg => (
+                            <MessageBubble key={msg._id} message={msg} currentUserId={currentUser._id} onImageClick={openImageViewer} />
+                        ))}
+                        <div ref={messagesEndRef} className="h-2" />
+                    </>
+                )}
             </div>
+            
             <MessageInput onSendMessage={handleSendMessage} onFileUpload={() => { }} selectedChat={chat} />
 
             {showImageViewer && (
@@ -206,7 +205,6 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
     );
 };
 
-// Add prop types validation
 ActiveChatWindow.propTypes = {
     chat: PropTypes.shape({
         _id: PropTypes.string.isRequired,
