@@ -1,23 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { BsThreeDotsVertical, BsSearch } from 'react-icons/bs';
 import { RiChat3Line } from 'react-icons/ri';
 import ActiveChatWindow from '../components/ActiveChatWindow';
-import ProfilePage from './ProfilePage'; // Import ProfilePage
-import { useTheme } from '../context/ThemeContext'; // Import useTheme
+import ProfilePage from './ProfilePage';
+import { useTheme } from '../context/ThemeContext';
 import getAvatarUrl from '../utils/avatar';
 import Sidebar from '../components/Sidebar';
-import { useAuth } from '../context/AuthContext'; // Import useAuth
+import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 
 const ChatPlaceholder = () => (
-    <div className="flex-1 flex items-center justify-center bg-transparent">
-        <div className="text-center">
-            <RiChat3Line className="mx-auto text-cyan-400/50" size={100} />
-            <h1 className="mt-4 text-4xl font-bold text-white/80">W-Chat Web</h1>
-            <p className="mt-2 text-xl text-white/60">
-                Select a chat to start messaging
-            </p>
+    <div className="flex-1 flex flex-col items-center justify-center bg-transparent p-8 text-center animate-fadeIn">
+        <div className="relative mb-6">
+            <div className="absolute inset-0 bg-neon-blue/20 rounded-full blur-xl animate-pulse"></div>
+            <RiChat3Line className="relative z-10 text-neon-cyan/80 drop-shadow-[0_0_15px_rgba(0,255,255,0.5)]" size={120} />
         </div>
+        <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-4 drop-shadow-md">
+            W-Chat Web
+        </h1>
+        <p className="text-lg md:text-xl text-gray-300 max-w-md leading-relaxed">
+            Select a chat to start messaging instantly.
+            <br />
+            <span className="text-sm text-gray-500 mt-2 block">Secure • Fast • Real-time</span>
+        </p>
     </div>
 );
 
@@ -27,8 +31,8 @@ const ChatPage = () => {
     const [showProfile, setShowProfile] = useState(false);
     const [chats, setChats] = useState([]);
     const [loadingChats, setLoadingChats] = useState(true);
-    const { token, currentUser, updateCurrentUser } = useAuth(); // Import useAuth
-    const { socket, onlineUsers } = useSocket(); // Get socket and onlineUsers from SocketContext
+    const { token, currentUser, updateCurrentUser } = useAuth();
+    const { socket, onlineUsers } = useSocket();
     console.log('ChatPage currentUser:', currentUser);
 
     const handleSelectChat = (chat) => {
@@ -63,12 +67,11 @@ const ChatPage = () => {
     };
 
     useEffect(() => {
-        if (token) { // Only fetch chats if a token exists
+        if (token) {
             fetchChats();
         }
-    }, [token]); // Re-fetch chats when token changes
+    }, [token]);
 
-    // Listen for incoming messages to update the sidebar chat list
     useEffect(() => {
         if (!socket || !currentUser) return;
 
@@ -77,22 +80,17 @@ const ChatPage = () => {
                 const chatIndex = prevChats.findIndex(c => c._id === newMessage.chat._id);
 
                 if (chatIndex > -1) {
-                    // Chat exists, update its latestMessage and move to top
                     const updatedChat = { ...prevChats[chatIndex], latestMessage: newMessage };
                     const filteredChats = prevChats.filter(c => c._id !== newMessage.chat._id);
                     return [updatedChat, ...filteredChats];
                 } else {
-                    // New chat, fetch it and add to the list
-                    // This case might happen if a new chat is initiated by another user
-                    fetchChats(); // Or, ideally, you'd just fetch the single new chat info
+                    fetchChats();
                     return prevChats;
                 }
             });
 
-            // Also, update the active chat if it's the one receiving the message
             setActiveChat(prevActiveChat => {
                 if (prevActiveChat && prevActiveChat._id === newMessage.chat._id) {
-                    // This ensures the message count and latest message updates in the ActiveChatWindow
                     return { ...prevActiveChat, latestMessage: newMessage, messages: [...(prevActiveChat.messages || []), newMessage] };  
                 }
                 return prevActiveChat;
@@ -104,7 +102,7 @@ const ChatPage = () => {
         return () => {
             socket.off('msg-received', handleNewMessage);
         };
-    }, [socket, currentUser, setActiveChat, fetchChats]); // Add fetchChats to dependencies
+    }, [socket, currentUser, setActiveChat, fetchChats]);
 
     const handleAvatarUpdate = (relativeUrl) => {
         updateCurrentUser({ ...currentUser, avatar: relativeUrl });
@@ -124,24 +122,27 @@ const ChatPage = () => {
                 chat._id === chatId ? { ...chat, latestMessage: null } : chat
             )
         );
-        // If the cleared chat is the active chat, refresh the chat window
         if (activeChat?._id === chatId) {
             setActiveChat(prev => ({ ...prev, messages: [] , latestMessage: null}));
         }
     };
 
     return (
-        <div className="h-svh w-dvw flex items-center justify-center bg-gray-900 font-inter">
-            {/* Background Gradient */}
-            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-500 via-cyan-500 to-blue-700 opacity-30 animate-gradient"></div>
+        <div className="h-svh w-dvw flex items-center justify-center bg-gray-900 font-inter overflow-hidden relative">
+            {/* Animated Background Gradient */}
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600 via-cyan-500 to-indigo-900 opacity-20 animate-gradient bg-[length:400%_400%]"></div>
+            
+             {/* Decorative Orbs - Reused for consistency but positioned subtly */}
+             <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-neon-blue/10 rounded-full blur-[100px] animate-pulse"></div>
+             <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-neon-cyan/5 rounded-full blur-[120px] animate-pulse delay-700"></div>
 
-            {/* Main container with glassmorphism */}
-            <div className="relative w-full sm:w-11/12 h-svh sm:h-[95svh] bg-white/10 backdrop-blur-lg rounded-none sm:rounded-2xl shadow-2xl overflow-hidden flex">
+            {/* Main container with refined glassmorphism */}
+            <div className="relative w-full sm:w-[95%] lg:w-[90%] xl:w-[85%] h-svh sm:h-[92svh] bg-white/5 backdrop-blur-2xl border border-white/10 rounded-none sm:rounded-3xl shadow-2xl overflow-hidden flex transition-all duration-300">
                 {/* Left Panel Container */}
-                <div className={`relative w-full md:w-1/3 md:max-w-md ${activeChat ? 'hidden md:flex' : 'flex'} flex-col flex-grow bg-black/20`}>
+                <div className={`relative w-full md:w-[35%] lg:w-[30%] md:min-w-[320px] border-r border-white/10 ${activeChat ? 'hidden md:flex' : 'flex'} flex-col flex-grow bg-black/20`}>
                     {/* Profile Panel (Sliding) */}
                     <div
-                        className={`absolute top-0 left-0 w-full h-full bg-gray-800/80 backdrop-blur-md z-20 transform transition-transform duration-300 ease-in-out ${
+                        className={`absolute top-0 left-0 w-full h-full bg-gray-900/95 backdrop-blur-xl z-30 transform transition-transform duration-300 ease-out ${
                             showProfile ? 'translate-x-0' : '-translate-x-full'
                         }`}
                     >
@@ -157,6 +158,7 @@ const ChatPage = () => {
                     {currentUser && (
                         <Sidebar
                             onSelectChat={handleSelectChat}
+                            activeChat={activeChat}
                             onShowProfile={() => setShowProfile(true)}
                             currentUser={currentUser}
                             chats={chats}
@@ -170,8 +172,20 @@ const ChatPage = () => {
                 </div>
 
                 {/* Right Panel: Messaging View */}
-                <div className={`w-full md:w-2/3 ${activeChat ? 'flex' : 'hidden md:flex'} flex-col flex-grow`}>
-                    {activeChat ? <ActiveChatWindow chat={activeChat} currentUser={currentUser} onBack={() => setActiveChat(null)} onlineUsers={onlineUsers} /> : <ChatPlaceholder />}
+                <div className={`w-full md:w-[65%] lg:w-[70%] ${activeChat ? 'flex' : 'hidden md:flex'} flex-col flex-grow bg-black/40 relative`}>
+                    {/* Background Pattern Overlay for Chat Area */}
+                     <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none"></div>
+                    
+                    {activeChat ? (
+                        <ActiveChatWindow 
+                            chat={activeChat} 
+                            currentUser={currentUser} 
+                            onBack={() => setActiveChat(null)} 
+                            onlineUsers={onlineUsers} 
+                        />
+                    ) : (
+                        <ChatPlaceholder />
+                    )}
                 </div>
             </div>
         </div>

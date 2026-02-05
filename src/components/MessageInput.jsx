@@ -2,13 +2,12 @@ import React, { useState, useRef } from 'react';
 import { BsEmojiSmile, BsPaperclip, BsSendFill, BsXCircle } from 'react-icons/bs';
 import Picker from 'emoji-picker-react';
 
-
 const MessageInput = ({ selectedChat, onSendMessage, onFileUpload }) => {
   const [message, setMessage] = useState('');
   const [previewImage, setPreviewImage] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false); // State for emoji picker visibility
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const handleSendMessage = async () => {
     if (!selectedChat || (!message.trim() && !selectedFile)) return;
@@ -43,13 +42,11 @@ const MessageInput = ({ selectedChat, onSendMessage, onFileUpload }) => {
         }
       } else {
         console.error('Failed to send message:', data.message);
-        alert('Failed to send message.');
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      alert('An error occurred while sending the message.');
     } finally {
-      setShowEmojiPicker(false); // Close emoji picker after sending
+      setShowEmojiPicker(false);
     }
   };
 
@@ -69,8 +66,9 @@ const MessageInput = ({ selectedChat, onSendMessage, onFileUpload }) => {
 
   const removePreviewImage = () => {
     setPreviewImage(null);
+    setSelectedFile(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = ''; // Clear the file input
+      fileInputRef.current.value = '';
     }
   };
 
@@ -83,64 +81,104 @@ const MessageInput = ({ selectedChat, onSendMessage, onFileUpload }) => {
 
   const onEmojiClick = (emojiObject) => {
     setMessage((prevMessage) => prevMessage + emojiObject.emoji);
-    setShowEmojiPicker(false); // Close picker after selecting emoji
   };
 
   return (
-    <div className="sticky bottom-0 z-10 p-4 bg-black/20 backdrop-blur-md">
+    <div className="relative z-20 p-4 bg-white/5 backdrop-blur-2xl border-t border-white/10 mt-auto animate-fadeIn">
+      {/* File Preview Area */}
       {previewImage && (
-        <div className="relative mb-2 w-32 h-32">
-          <img src={previewImage} alt="Preview" className="w-full h-full object-cover rounded-lg border border-white/30" />
-          <button
-            onClick={removePreviewImage}
-            className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1.5 text-xs shadow-lg hover:bg-red-700"
-            aria-label="Remove image"
-          >
-            <BsXCircle />
-          </button>
+        <div className="absolute bottom-full left-4 mb-4 p-2 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl animate-fadeIn">
+          <div className="relative group">
+            <img 
+              src={previewImage} 
+              alt="Preview" 
+              className="w-32 h-32 sm:w-40 sm:h-40 object-cover rounded-xl border border-white/10" 
+            />
+            <button
+              onClick={removePreviewImage}
+              className="absolute -top-3 -right-3 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 shadow-lg transition-transform hover:scale-110 active:scale-90"
+              aria-label="Remove image"
+            >
+              <BsXCircle size={18} />
+            </button>
+          </div>
         </div>
       )}
-      <div className="flex items-center space-x-3">
-        <div className="relative">
-          <button
-            className="text-cyan-300 hover:text-cyan-100 p-2 rounded-full transition-colors"
-            onClick={() => setShowEmojiPicker((prev) => !prev)}
-          >
-            <BsEmojiSmile size={24} />
-          </button>
-          {showEmojiPicker && (
-            <div className="absolute bottom-full left-0 mb-2">
-              <Picker onEmojiClick={onEmojiClick} theme="dark" pickerStyle={{ background: 'rgba(0,0,0,0.8)', border: '1px solid rgba(255,255,255,0.3)' }} />
-            </div>
-          )}
-        </div>
-        <input
-          type="file"
-          ref={fileInputRef}
-          className="hidden"
-          onChange={handleFileChange}
-          accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
-        />
-        <button
-          onClick={() => fileInputRef.current.click()}
-          className="text-cyan-300 hover:text-cyan-100 p-2 rounded-full transition-colors"
-        >
-          <BsPaperclip size={24} />
-        </button>
 
-        <textarea
-          className="flex-1 resize-none bg-black/30 text-white placeholder-gray-400 rounded-lg p-3 outline-none focus:ring-2 focus:ring-cyan-400/50 border border-white/20"
-          placeholder="Type a message..."
-          rows="1"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyPress={handleKeyPress}
-        />
+      <div className="flex items-end space-x-2 sm:space-x-4 max-w-7xl mx-auto">
+        {/* Emoji and Attachment Buttons */}
+        <div className="flex items-center space-x-1 mb-1">
+          <div className="relative">
+            <button
+              className={`p-2.5 rounded-xl transition-all duration-200 ${showEmojiPicker ? 'bg-neon-blue/20 text-neon-blue' : 'text-gray-400 hover:text-neon-cyan hover:bg-white/5'}`}
+              onClick={() => setShowEmojiPicker((prev) => !prev)}
+              title="Emoji"
+            >
+              <BsEmojiSmile size={22} />
+            </button>
+            
+            {showEmojiPicker && (
+              <div className="absolute bottom-full left-0 mb-4 shadow-2xl animate-fadeIn">
+                <div className="fixed inset-0" onClick={() => setShowEmojiPicker(false)}></div>
+                <div className="relative z-50">
+                   <Picker 
+                    onEmojiClick={onEmojiClick} 
+                    theme="dark" 
+                    lazyLoadEmojis={true}
+                    searchPlaceholder="Search emojis..."
+                    width={300}
+                    height={400}
+                    previewConfig={{ showPreview: false }}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          <input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            onChange={handleFileChange}
+            accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+          />
+          <button
+            onClick={() => fileInputRef.current.click()}
+            className="p-2.5 text-gray-400 hover:text-neon-cyan hover:bg-white/5 rounded-xl transition-all duration-200"
+            title="Attach File"
+          >
+            <BsPaperclip size={24} className="rotate-45" />
+          </button>
+        </div>
+
+        {/* Text Input Area */}
+        <div className="flex-1 relative group">
+          <textarea
+            className="w-full resize-none bg-white/5 text-gray-100 placeholder-gray-500 rounded-2xl py-3 px-4 max-h-32 outline-none focus:ring-2 focus:ring-neon-blue/40 border border-white/10 hover:border-white/20 transition-all duration-300 text-[15px] custom-scrollbar"
+            placeholder="Type a message..."
+            rows="1"
+            value={message}
+            onChange={(e) => {
+              setMessage(e.target.value);
+              e.target.style.height = 'auto';
+              e.target.style.height = `${Math.min(e.target.scrollHeight, 128)}px`;
+            }}
+            onKeyPress={handleKeyPress}
+          />
+        </div>
+
+        {/* Send Button */}
         <button
           onClick={handleSendMessage}
-          className="bg-cyan-500 hover:bg-cyan-400 text-white p-3 rounded-full transition-colors shadow-lg"
+          disabled={!message.trim() && !selectedFile}
+          className={`mb-1 p-3.5 rounded-2xl transition-all duration-300 shadow-lg active:scale-95 flex items-center justify-center
+            ${(!message.trim() && !selectedFile) 
+              ? 'bg-white/5 text-gray-600 cursor-not-allowed border border-white/5' 
+              : 'bg-gradient-to-r from-neon-blue to-blue-600 text-white hover:shadow-neon-blue/40 border border-transparent'
+            }
+          `}
         >
-          <BsSendFill size={20} />
+          <BsSendFill size={18} className={`${message.trim() || selectedFile ? 'translate-x-0.5 -translate-y-0.5' : ''}`} />
         </button>
       </div>
     </div>
@@ -148,3 +186,4 @@ const MessageInput = ({ selectedChat, onSendMessage, onFileUpload }) => {
 };
 
 export default MessageInput;
+
