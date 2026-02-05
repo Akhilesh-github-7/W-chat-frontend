@@ -7,7 +7,7 @@ import ChatActions from './ChatActions';
 import { useAuth } from '../context/AuthContext';
 
 
-const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats, onChatCreated,onChatDeleted, onChatCleared, onlineUsers }) => {
+const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats, onChatCreated,onChatDeleted, onChatCleared, onlineUsers, activeChat }) => {
   console.log('Sidebar currentUser:', currentUser);
   const { theme, toggleTheme } = useTheme();
   const [searchTerm, setSearchTerm] = useState('');
@@ -155,72 +155,86 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
       {/* Sidebar */}
       <div className="bg-transparent text-white flex flex-col h-full p-4">
         {/* Profile and Theme Toggle */}
-        <div className="flex items-center justify-between pb-4 border-b border-white/20">
-          <div className="flex items-center cursor-pointer" onClick={onShowProfile}>
-            <img
-              src={getAvatarUrl(currentUser?.avatar)}
-              alt="User Avatar"
-              className="w-11 h-11 rounded-full mr-3 border-2 border-cyan-400/50"
-            />
-            <span className="font-bold text-lg">{currentUser?.name || 'My Profile'}</span>
+        <div className="flex items-center justify-between pb-5 border-b border-white/10 mb-4">
+          <div 
+            className="flex items-center cursor-pointer group p-2 rounded-xl hover:bg-white/5 transition-all duration-300 w-full" 
+            onClick={onShowProfile}
+          >
+            <div className="relative">
+               <img
+                src={getAvatarUrl(currentUser?.avatar)}
+                alt="User Avatar"
+                className="w-12 h-12 rounded-full mr-4 border-2 border-neon-blue/50 shadow-[0_0_10px_rgba(0,191,255,0.3)] group-hover:shadow-[0_0_15px_rgba(0,191,255,0.6)] transition-all duration-300"
+              />
+              <div className="absolute bottom-0 right-4 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-gray-900"></div>
+            </div>
+           
+            <div className="flex flex-col">
+              <span className="font-bold text-lg text-white group-hover:text-neon-cyan transition-colors">{currentUser?.name || 'My Profile'}</span>
+              <span className="text-xs text-gray-400">My Status</span>
+            </div>
           </div>
         </div>
 
         {/* Search Bar */}
-        <div className="relative my-4">
+        <div className="relative mb-6 group">
           <input
             type="text"
             placeholder="Search or start new chat"
-            className="w-full py-2.5 pl-10 pr-4 rounded-full bg-black/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 border border-white/20"
+            className="w-full py-3 pl-11 pr-4 rounded-xl bg-black/40 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-neon-blue/50 border border-white/10 hover:border-white/20 transition-all duration-300"
             value={searchTerm}
             onChange={(e) => handleSearch(e.target.value)}
           />
-          <BsSearch className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <BsSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 group-focus-within:text-neon-blue transition-colors" />
         </div>
 
         {/* Search Results */}
         {searchTerm && (
-          <div className="flex-1 overflow-y-auto custom-scrollbar mb-4">
-            <h2 className="text-xl font-bold mb-2 text-cyan-400">Search Results</h2>
+          <div className="flex-1 overflow-y-auto custom-scrollbar mb-4 animate-fadeIn">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-neon-cyan mb-3 px-2">Search Results</h2>
             {loadingSearchResults ? (
-              <p className="text-gray-300">Searching users...</p>
+              <p className="text-gray-400 px-2 italic">Searching users...</p>
             ) : searchResults.length === 0 ? (
-              <p className="text-gray-400">No users found.</p>
+              <p className="text-gray-500 px-2 italic">No users found.</p>
             ) : (
               searchResults.map((user) => (
                 <div
                   key={user._id}
-                  className="flex items-center p-3 rounded-lg cursor-pointer mb-2 hover:bg-black/30 transition-colors"
+                  className="flex items-center p-3 rounded-xl cursor-pointer mb-2 hover:bg-white/10 transition-all duration-200 border border-transparent hover:border-white/5"
                   onClick={() => handleUserClick(user)}
                 >
                   <div className="relative">
                     <img
                       src={getAvatarUrl(user.avatar)}
                       alt={`${user.name}'s avatar`}
-                      className="w-12 h-12 rounded-full mr-4"
+                      className="w-10 h-10 rounded-full mr-3 object-cover"
                     />
                     {onlineUsers.includes(user._id) && (
-                      <div className="absolute bottom-0 right-4 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-gray-800 shadow-[0_0_5px_#39FF14]"></div>
+                      <div className="absolute bottom-0 right-3 w-3 h-3 bg-green-500 rounded-full border-2 border-gray-800"></div>
                     )}
                   </div>
-                  <h3 className="font-semibold text-lg">{user.name}</h3>
+                  <h3 className="font-semibold text-base text-gray-200">{user.name}</h3>
                 </div>
               ))
             )}
+            <hr className="border-white/10 my-4"/>
           </div>
         )}
 
         {/* Chats List */}
         <div className="flex-1 overflow-y-auto custom-scrollbar">
-          <h2 className="text-xl font-bold mb-2 text-cyan-400">My Chats</h2>
+           {!searchTerm && <h2 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3 px-2">Recent Chats</h2>}
           {loadingChats ? (
-            <p className="text-gray-300">Loading chats...</p>
+            <div className="flex justify-center py-4">
+                 <div className="w-6 h-6 border-2 border-neon-blue/30 border-t-neon-blue rounded-full animate-spin"></div>
+            </div>
           ) : filteredChats.length === 0 ? (
-            <p className="text-gray-400">No chats found.</p>
+            <p className="text-gray-500 text-center py-4 text-sm">No chats found.</p>
           ) : (
             filteredChats.map((chat) => {
               const otherUser = chat.users.find(u => u?._id !== currentUser._id);
               const isOnline = onlineUsers.includes(otherUser?._id);
+              const isActive = activeChat?._id === chat._id;
 
               if (!chat.isGroupChat && !otherUser) {
                 console.warn("Skipping chat due to missing otherUser:", chat);
@@ -230,7 +244,12 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
               return (
                 <div
                   key={chat._id}
-                  className="flex items-center p-3 rounded-lg cursor-pointer mb-2 relative hover:bg-black/30 transition-colors"
+                  className={`flex items-center p-3 rounded-xl cursor-pointer mb-2 relative transition-all duration-200 group border
+                    ${isActive 
+                        ? 'bg-neon-blue/10 border-neon-blue/50 shadow-[0_0_15px_rgba(0,191,255,0.1)]' 
+                        : 'border-transparent hover:bg-white/5 hover:border-white/5'
+                    }
+                  `}
                   onClick={() => handleChatClick(chat)}
                   onContextMenu={(e) => handleContextMenu(e, chat)}
                 >
@@ -238,18 +257,23 @@ const Sidebar = ({ onSelectChat, onShowProfile, currentUser, chats, loadingChats
                     <img
                       src={chat.isGroupChat ? "https://i.pravatar.cc/150?img=group.jpg" : getAvatarUrl(otherUser?.avatar)}
                       alt="Chat Avatar"
-                      className="w-12 h-12 rounded-full"
+                      className={`w-12 h-12 rounded-full object-cover transition-transform duration-300 ${isActive ? 'scale-105 ring-2 ring-neon-blue/50' : 'group-hover:scale-105'}`}
                     />
                     {!chat.isGroupChat && isOnline && (
-                      <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-gray-800 shadow-[0_0_5px_#39FF14]"></div>
+                      <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-gray-900 shadow-[0_0_5px_#39FF14]"></div>
                     )}
                   </div>
-                  <div className="flex-1">
-                    <div className="flex justify-between items-center">
-                      <h3 className="font-semibold text-lg">{chat.isGroupChat ? chat.chatName : otherUser?.name || 'Unknown User'}</h3>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-center mb-1">
+                      <h3 className={`font-semibold text-base truncate ${isActive ? 'text-white' : 'text-gray-200 group-hover:text-white'}`}>
+                        {chat.isGroupChat ? chat.chatName : otherUser?.name || 'Unknown User'}
+                      </h3>
+                       {/* Optional: Add time here if available in future */}
                     </div>
-                    <div className="flex justify-between items-center text-sm text-gray-400">
-                      <p className="truncate w-40">{chat.latestMessage?.content || "No messages yet"}</p>
+                    <div className="flex justify-between items-center text-sm">
+                      <p className={`truncate w-full ${isActive ? 'text-neon-blue/80' : 'text-gray-400 group-hover:text-gray-300'}`}>
+                        {chat.latestMessage?.content || <span className="italic opacity-50">No messages yet</span>}
+                      </p>
                     </div>
                   </div>
                 </div>
