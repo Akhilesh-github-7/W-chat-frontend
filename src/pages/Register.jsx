@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { BsPersonFill, BsLockFill, BsEnvelopeFill, BsEyeFill, BsEyeSlashFill } from 'react-icons/bs';
 import logo from '../assets/images/logo.png';
 import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -13,20 +14,18 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
   const { login } = useAuth();
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    setError('');
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match!");
+      toast.error("Passwords do not match!");
       return;
     }
 
     if (password.length < 6) {
-      setError("Password must be at least 6 characters long.");
+      toast.error("Password must be at least 6 characters long.");
       return;
     }
 
@@ -45,13 +44,14 @@ const Register = () => {
 
       if (response.ok) {
         login(data.token, data);
+        toast.success('Registration successful!');
         navigate('/chat');
       } else {
-        setError(data.message || 'Registration failed. Try a different username or email.');
+        toast.error(data.message || 'Registration failed. Try a different username or email.');
       }
     } catch (error) {
       console.error('Registration error:', error);
-      setError('Connection lost. Please try again later.');
+      toast.error('Connection lost. Please try again later.');
     } finally {
       setIsLoading(false);
     }
@@ -73,12 +73,6 @@ const Register = () => {
           <h1 className="text-white text-2xl sm:text-3xl font-bold tracking-tight mb-1">Create Account</h1>
           <p className="text-gray-400 text-sm sm:text-base font-script italic">Powered by people. Connected by you</p>
         </div>
-
-        {error && (
-          <div className="mb-4 p-3 rounded-lg bg-red-500/20 border border-red-500/50 text-red-200 text-xs sm:text-sm animate-shake">
-            {error}
-          </div>
-        )}
 
         <form onSubmit={handleSignUp} className="space-y-4 sm:space-y-5">
           {/* Username Input */}
