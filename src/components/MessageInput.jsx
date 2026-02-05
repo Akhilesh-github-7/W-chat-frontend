@@ -84,7 +84,7 @@ const MessageInput = ({ selectedChat, onSendMessage, onFileUpload }) => {
   };
 
   return (
-    <div className="relative z-20 p-4 bg-white/5 backdrop-blur-2xl border-t border-white/10 mt-auto animate-fadeIn">
+    <div className="relative z-20 p-4 bg-white/5 backdrop-blur-2xl border-t border-white/10 mt-auto">
       {/* File Preview Area */}
       {previewImage && (
         <div className="absolute bottom-full left-4 mb-4 p-2 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl animate-fadeIn">

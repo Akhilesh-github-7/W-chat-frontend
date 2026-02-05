@@ -86,7 +86,7 @@ const ProfilePage = ({ onCloseProfile, onAvatarUpdate, avatar, user }) => {
   const currentAvatar = getAvatarUrl(user?.avatar || avatar);
 
   return (
-    <div className="w-full h-full bg-transparent text-white flex flex-col animate-fadeIn">
+    <div className="w-full h-full bg-transparent text-white flex flex-col">
       <div className="w-full flex flex-col h-full">
         {/* Header */}
         <div className="w-full flex-none pt-8 pb-4 bg-white/5 backdrop-blur-2xl border-b border-white/10 relative px-6">
