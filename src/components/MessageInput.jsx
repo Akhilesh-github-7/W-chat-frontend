@@ -154,7 +154,7 @@ const MessageInput = ({ selectedChat, onSendMessage, onFileUpload }) => {
         {/* Text Input Area */}
         <div className="flex-1 relative group">
           <textarea
-            className="w-full resize-none bg-white/5 text-gray-100 placeholder-gray-500 rounded-2xl py-3 px-4 max-h-32 outline-none focus:ring-2 focus:ring-neon-blue/40 border border-white/10 hover:border-white/20 transition-all duration-300 text-[15px] custom-scrollbar"
+            className="w-full resize-none bg-white/5 text-gray-100 placeholder-gray-500 rounded-2xl py-3 px-4 max-h-32 outline-none focus:ring-2 focus:ring-neon-blue/40 border border-white/10 hover:border-white/20 transition-all duration-300 text-[15px] scrollbar-hide"
             placeholder="Type a message..."
             rows="1"
             value={message}
