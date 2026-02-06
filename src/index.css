@@ -10,7 +10,6 @@ html, body, #root {
   padding: 0;
   overflow: hidden;
   width: 100%;
-  position: fixed; /* Prevents scroll bounce on some iOS versions */
   scroll-behavior: smooth;
 }
 

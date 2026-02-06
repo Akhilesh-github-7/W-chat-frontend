@@ -51,8 +51,9 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
         const handleResize = () => {
             if (window.visualViewport.height < window.innerHeight) {
                 // Viewport shrunk, likely keyboard opened
-                // Use smooth scroll when keyboard opens for a better feel
-                setTimeout(() => scrollToBottom(true), 150);
+                requestAnimationFrame(() => {
+                    scrollToBottom(true);
+                });
             }
         };
 
