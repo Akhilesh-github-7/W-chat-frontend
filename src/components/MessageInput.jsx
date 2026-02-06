@@ -126,8 +126,8 @@ const MessageInput = ({ selectedChat, onSendMessage, onFileUpload }) => {
                     theme="dark" 
                     lazyLoadEmojis={true}
                     searchPlaceholder="Search emojis..."
-                    width={300}
-                    height={400}
+                    width={window.innerWidth < 640 ? 280 : 350}
+                    height={window.innerWidth < 640 ? 320 : 450}
                     previewConfig={{ showPreview: false }}
                   />
                 </div>
