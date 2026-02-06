@@ -45,7 +45,7 @@ const Login = () => {
   };
 
   return (
-    <div className="h-dvh w-dvw flex items-center justify-center bg-gray-900 font-inter overflow-hidden relative">
+    <div className="h-full w-full flex items-center justify-center bg-gray-900 font-inter overflow-hidden relative">
       {/* Animated Background Gradient */}
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600 via-cyan-500 to-indigo-900 opacity-20 animate-gradient bg-[length:400%_400%]"></div>
       
@@ -54,7 +54,7 @@ const Login = () => {
       <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-neon-cyan/10 rounded-full blur-[120px] animate-pulse delay-700"></div>
 
       {/* Main container with glassmorphism */}
-      <div className="relative w-full max-w-md p-6 sm:p-10 rounded-none sm:rounded-3xl shadow-2xl bg-white/5 backdrop-blur-xl border border-white/10 text-center h-dvh sm:h-auto flex flex-col justify-center animate-fadeIn">
+      <div className="relative w-full max-w-md p-6 sm:p-10 rounded-none sm:rounded-3xl shadow-2xl bg-white/5 backdrop-blur-xl mobile-no-blur border border-white/10 text-center h-full sm:h-auto flex flex-col justify-center animate-fadeIn">
         <div className="mb-8">
           <img src={logo} alt="Logo" className="mx-auto h-20 sm:h-24 md:h-28 mb-4 drop-shadow-lg hover:scale-105 transition-transform duration-300" />
           <h1 className="text-white text-3xl sm:text-4xl font-bold tracking-tight mb-2">Welcome Back</h1>
