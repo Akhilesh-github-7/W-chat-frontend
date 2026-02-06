@@ -58,7 +58,7 @@ const Register = () => {
   };
 
   return (
-    <div className="h-svh w-dvw flex items-center justify-center bg-gray-900 font-inter overflow-hidden relative">
+    <div className="h-dvh w-dvw flex items-center justify-center bg-gray-900 font-inter overflow-hidden relative">
       {/* Animated Background Gradient */}
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600 via-cyan-500 to-indigo-900 opacity-20 animate-gradient bg-[length:400%_400%]"></div>
       
@@ -67,7 +67,7 @@ const Register = () => {
       <div className="absolute bottom-[-10%] left-[-10%] w-96 h-96 bg-neon-cyan/10 rounded-full blur-[120px] animate-pulse delay-700"></div>
 
       {/* Main container with glassmorphism */}
-      <div className="relative w-full max-w-md p-6 sm:p-10 rounded-none sm:rounded-3xl shadow-2xl bg-white/5 backdrop-blur-xl border border-white/10 text-center h-svh sm:h-auto flex flex-col justify-center animate-fadeIn">
+      <div className="relative w-full max-w-md p-6 sm:p-10 rounded-none sm:rounded-3xl shadow-2xl bg-white/5 backdrop-blur-xl border border-white/10 text-center h-dvh sm:h-auto flex flex-col justify-center animate-fadeIn">
         <div className="mb-6">
           <img src={logo} alt="Logo" className="mx-auto h-16 sm:h-20 md:h-24 mb-3 drop-shadow-lg hover:scale-105 transition-transform duration-300" />
           <h1 className="text-white text-2xl sm:text-3xl font-bold tracking-tight mb-1">Create Account</h1>

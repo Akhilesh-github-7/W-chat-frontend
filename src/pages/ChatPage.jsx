@@ -128,7 +128,7 @@ const ChatPage = () => {
     };
 
     return (
-        <div className="h-screen w-screen flex items-center justify-center bg-gray-900 font-inter overflow-hidden relative">
+        <div className="h-dvh w-dvw flex items-center justify-center bg-gray-900 font-inter overflow-hidden relative">
             {/* Animated Background Gradient */}
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600 via-cyan-500 to-indigo-900 opacity-20 animate-gradient bg-[length:400%_400%]"></div>
             
