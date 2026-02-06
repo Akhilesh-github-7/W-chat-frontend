@@ -30,10 +30,10 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
     };
 
     // Auto-scroll to bottom of messages - Refined to prevent parent container from shifting
-    const scrollToBottom = useCallback(() => {
+    const scrollToBottom = useCallback((smooth = false) => {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ 
-                behavior: "auto", 
+                behavior: smooth ? "smooth" : "auto", 
                 block: "end",
                 inline: "nearest"
             });
@@ -41,7 +41,7 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
     }, []);
 
     useEffect(() => {
-        scrollToBottom();
+        scrollToBottom(false);
     }, [messages, chat?._id, scrollToBottom]);
 
     // Handle Visual Viewport (Keyboard) changes
@@ -51,7 +51,8 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
         const handleResize = () => {
             if (window.visualViewport.height < window.innerHeight) {
                 // Viewport shrunk, likely keyboard opened
-                setTimeout(scrollToBottom, 100);
+                // Use smooth scroll when keyboard opens for a better feel
+                setTimeout(() => scrollToBottom(true), 150);
             }
         };
 
