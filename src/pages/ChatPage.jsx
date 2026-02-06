@@ -136,7 +136,7 @@ const ChatPage = () => {
              <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-neon-blue/10 rounded-full blur-[100px]"></div>
              <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-neon-cyan/5 rounded-full blur-[120px]"></div>
 
-            <div className="relative w-full sm:w-[95%] lg:w-[90%] xl:w-[85%] h-full sm:h-[92svh] bg-white/5 backdrop-blur-2xl border border-white/10 rounded-none sm:rounded-3xl shadow-xl overflow-hidden flex transition-[height] duration-300 ease-in-out">
+            <div className="relative w-full sm:w-[95%] lg:w-[90%] xl:w-[85%] h-full sm:h-[92svh] bg-white/5 backdrop-blur-2xl border border-white/10 rounded-none sm:rounded-3xl shadow-xl overflow-hidden flex">
                 {/* Left Panel Container */}
                 <div className={`relative w-full md:w-[35%] lg:w-[30%] md:min-w-[320px] border-r border-white/10 ${activeChat ? 'hidden md:flex' : 'flex'} flex-col flex-grow bg-black/20`}>
                     {/* Profile Panel (Sliding) */}
