@@ -8,6 +8,11 @@ const getAvatarUrl = (avatarPath) => {
   // Ensure VITE_API_URL is available
   const baseUrl = import.meta.env.VITE_API_URL || '';
 
+  // If it's a data URI (Base64), return it as is
+  if (avatarPath.startsWith('data:')) {
+    return avatarPath;
+  }
+
   // If it's a full URL, check if it's a legacy URL pointing to /uploads/
   if (avatarPath.startsWith('http')) {
     if (avatarPath.includes('/uploads/')) {
