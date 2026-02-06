@@ -1,9 +1,30 @@
 import React from 'react';
-import { BsCheckAll, BsCheck } from 'react-icons/bs';
+import { BsCheckAll, BsCheck, BsFileEarmarkPdfFill, BsFileEarmarkWordFill, BsFileEarmarkBarGraphFill, BsFileEarmarkMusicFill, BsFileEarmarkZipFill, BsFileEarmarkFill, BsDownload } from 'react-icons/bs';
 import { format } from 'date-fns';
 
+const FileIcon = ({ fileName }) => {
+  const ext = fileName.split('.').pop().toLowerCase();
+  const iconSize = 24;
+  
+  if (ext === 'pdf') return <BsFileEarmarkPdfFill size={iconSize} className="text-red-500" />;
+  if (['doc', 'docx'].includes(ext)) return <BsFileEarmarkWordFill size={iconSize} className="text-blue-500" />;
+  if (['xls', 'xlsx', 'csv'].includes(ext)) return <BsFileEarmarkBarGraphFill size={iconSize} className="text-green-500" />;
+  if (['mp3', 'wav', 'ogg'].includes(ext)) return <BsFileEarmarkMusicFill size={iconSize} className="text-purple-500" />;
+  if (['zip', 'rar', '7z'].includes(ext)) return <BsFileEarmarkZipFill size={iconSize} className="text-yellow-500" />;
+  
+  return <BsFileEarmarkFill size={iconSize} className="text-gray-400" />;
+};
+
+const formatFileSize = (bytes) => {
+  if (!bytes) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
+
 const MessageBubble = ({ message, currentUserId, onImageClick }) => {
-  const { content, createdAt, sentByMe, seenBy, sender } = message;
+  const { content, createdAt, sentByMe, seenBy, sender, fileName, fileSize } = message;
 
   const isRead = seenBy && seenBy.includes(currentUserId);
 
@@ -39,12 +60,22 @@ const MessageBubble = ({ message, currentUserId, onImageClick }) => {
                 href={`${import.meta.env.VITE_API_URL}/uploads/${message.file.replace(/\\/g, '/')}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 p-3 rounded-lg bg-black/20 hover:bg-black/30 transition-colors border border-white/10"
+                download={fileName}
+                className="flex items-center gap-3 p-3 rounded-xl bg-black/30 hover:bg-black/40 transition-all duration-200 border border-white/5 group/file shadow-inner"
               >
-                <div className="bg-white/10 p-2 rounded">📄</div>
-                <div className="flex flex-col overflow-hidden">
-                    <span className="text-sm font-medium truncate text-cyan-300">View Attachment</span>
-                    <span className="text-xs text-gray-400 truncate opacity-70">Click to open</span>
+                <div className="bg-white/5 p-2.5 rounded-lg group-hover/file:bg-white/10 transition-colors">
+                  <FileIcon fileName={fileName || message.file} />
+                </div>
+                <div className="flex flex-col overflow-hidden flex-1">
+                    <span className="text-[13px] font-semibold truncate text-gray-100 group-hover/file:text-neon-cyan transition-colors">
+                        {fileName || 'Document'}
+                    </span>
+                    <span className="text-[10px] text-gray-400 font-medium">
+                        {formatFileSize(fileSize)}
+                    </span>
+                </div>
+                <div className="text-gray-500 group-hover/file:text-white transition-colors">
+                    <BsDownload size={18} />
                 </div>
               </a>
             )}
