@@ -36,8 +36,12 @@ export default {
       },
       height: {
         svh: '100svh',
+        lvh: '100lvh',
+        dvh: '100dvh',
       },
       width: {
+        svw: '100svw',
+        lvw: '100lvw',
         dvw: '100dvw',
       },
     },

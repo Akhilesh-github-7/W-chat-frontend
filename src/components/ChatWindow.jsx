@@ -81,7 +81,7 @@ const ChatWindow = ({ selectedChat }) => {
 
   return (
     <div
-      className={`flex-1 flex flex-col h-screen
+      className={`flex-1 flex flex-col h-full
       ${theme === 'dark' ? 'bg-whatsapp-dark-bg-primary' : 'bg-gray-50'}`}
     >
       <ChatHeader
