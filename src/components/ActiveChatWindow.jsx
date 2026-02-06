@@ -30,7 +30,7 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
     };
 
     // Auto-scroll to bottom of messages - Refined to prevent parent container from shifting
-    useEffect(() => {
+    const scrollToBottom = useCallback(() => {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ 
                 behavior: "auto", 
@@ -38,7 +38,26 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
                 inline: "nearest"
             });
         }
-    }, [messages, chat?._id]);
+    }, []);
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages, chat?._id, scrollToBottom]);
+
+    // Handle Visual Viewport (Keyboard) changes
+    useEffect(() => {
+        if (!window.visualViewport) return;
+
+        const handleResize = () => {
+            if (window.visualViewport.height < window.innerHeight) {
+                // Viewport shrunk, likely keyboard opened
+                setTimeout(scrollToBottom, 100);
+            }
+        };
+
+        window.visualViewport.addEventListener('resize', handleResize);
+        return () => window.visualViewport.removeEventListener('resize', handleResize);
+    }, [scrollToBottom]);
 
     const fetchMessages = useCallback(async () => {
         if (chat?._id && currentUser?._id) {
@@ -169,7 +188,7 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
     const isContactOnline = onlineUsers.includes(contact?._id);
 
     return (
-        <div className="h-full flex-1 flex flex-col bg-transparent relative">
+        <div className="h-full flex-1 flex flex-col bg-transparent relative overflow-hidden">
              <ChatHeader 
                 contactName={contact?.name} 
                 contactAvatar={avatarSrc} 
