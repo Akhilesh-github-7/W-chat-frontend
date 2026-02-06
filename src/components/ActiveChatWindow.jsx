@@ -13,7 +13,7 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
     const { socket } = useSocket();
-    const messagesEndRef = useRef(null);
+    const scrollContainerRef = useRef(null);
 
     // State for image viewer
     const [showImageViewer, setShowImageViewer] = useState(false);
@@ -31,11 +31,11 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
 
     // Auto-scroll to bottom of messages - Refined to prevent parent container from shifting
     const scrollToBottom = useCallback((smooth = false) => {
-        if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ 
-                behavior: smooth ? "smooth" : "auto", 
-                block: "end",
-                inline: "nearest"
+        if (scrollContainerRef.current) {
+            const { scrollHeight, clientHeight } = scrollContainerRef.current;
+            scrollContainerRef.current.scrollTo({
+                top: scrollHeight,
+                behavior: smooth ? "smooth" : "auto"
             });
         }
     }, []);
@@ -190,7 +190,7 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
     const isContactOnline = onlineUsers.includes(contact?._id);
 
     return (
-        <div className="h-full flex-1 flex flex-col bg-transparent relative overflow-hidden">
+        <div className="h-full flex-1 flex flex-col bg-transparent relative overflow-hidden mobile-no-blur">
              <ChatHeader 
                 contactName={contact?.name} 
                 contactAvatar={avatarSrc} 
@@ -198,7 +198,10 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
                 onBack={onBack} 
             />
             
-            <div className="flex-1 p-4 overflow-y-auto custom-scrollbar min-h-0 relative scroll-smooth">
+            <div 
+                ref={scrollContainerRef}
+                className="flex-1 p-4 overflow-y-auto custom-scrollbar min-h-0 relative scroll-smooth"
+            >
                 {loading ? (
                     <div className="absolute inset-0 flex flex-col items-center justify-center space-y-4">
                         <div className="w-12 h-12 border-4 border-neon-blue/30 border-t-neon-blue rounded-full animate-spin"></div>
@@ -218,7 +221,6 @@ const ActiveChatWindow = ({ chat, currentUser, onBack, onlineUsers }) => {
                         {messages.map(msg => (
                             <MessageBubble key={msg._id} message={msg} currentUserId={currentUser._id} onImageClick={openImageViewer} />
                         ))}
-                        <div ref={messagesEndRef} className="h-2" />
                     </>
                 )}
             </div>

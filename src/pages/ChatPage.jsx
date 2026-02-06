@@ -128,7 +128,7 @@ const ChatPage = () => {
     };
 
     return (
-        <div className="h-dvh w-dvw flex items-center justify-center bg-gray-900 font-inter overflow-hidden relative">
+        <div className="h-full w-full flex items-center justify-center bg-gray-900 font-inter overflow-hidden relative">
             {/* Animated Background Gradient */}
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600 via-cyan-500 to-indigo-900 opacity-20 animate-gradient bg-[length:400%_400%]"></div>
             
@@ -136,7 +136,7 @@ const ChatPage = () => {
              <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-neon-blue/10 rounded-full blur-[100px]"></div>
              <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-neon-cyan/5 rounded-full blur-[120px]"></div>
 
-            <div className="relative w-full sm:w-[95%] lg:w-[90%] xl:w-[85%] h-full sm:h-[92svh] bg-white/5 backdrop-blur-2xl border border-white/10 rounded-none sm:rounded-3xl shadow-xl overflow-hidden flex">
+            <div className="relative w-full sm:w-[95%] lg:w-[90%] xl:w-[85%] h-full sm:h-[92svh] bg-white/5 backdrop-blur-2xl mobile-no-blur border border-white/10 rounded-none sm:rounded-3xl shadow-xl overflow-hidden flex">
                 {/* Left Panel Container */}
                 <div className={`relative w-full md:w-[35%] lg:w-[30%] md:min-w-[320px] border-r border-white/10 ${activeChat ? 'hidden md:flex' : 'flex'} flex-col flex-grow bg-black/20`}>
                     {/* Profile Panel (Sliding) */}
