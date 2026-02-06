@@ -86,20 +86,34 @@ const MessageInput = ({ selectedChat, onSendMessage, onFileUpload }) => {
   return (
     <div className="relative z-20 p-4 bg-white/5 backdrop-blur-2xl border-t border-white/10 mt-auto">
       {/* File Preview Area */}
-      {previewImage && (
-        <div className="absolute bottom-full left-4 mb-4 p-2 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl animate-fadeIn">
-          <div className="relative group">
-            <img 
-              src={previewImage} 
-              alt="Preview" 
-              className="w-32 h-32 sm:w-40 sm:h-40 object-cover rounded-xl border border-white/10" 
-            />
+      {(previewImage || selectedFile) && (
+        <div className="absolute bottom-full left-4 mb-4 p-2 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl animate-fadeIn max-w-[calc(100%-2rem)]">
+          <div className="relative group flex items-center gap-3">
+            {previewImage ? (
+              <img 
+                src={previewImage} 
+                alt="Preview" 
+                className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-xl border border-white/10" 
+              />
+            ) : (
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-black/20 rounded-xl flex items-center justify-center border border-white/10">
+                 <BsPaperclip size={24} className="text-neon-cyan" />
+              </div>
+            )}
+            
+            {!previewImage && selectedFile && (
+              <div className="flex flex-col pr-8 overflow-hidden">
+                <span className="text-white text-sm font-medium truncate max-w-[150px]">{selectedFile.name}</span>
+                <span className="text-gray-400 text-xs">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</span>
+              </div>
+            )}
+
             <button
               onClick={removePreviewImage}
-              className="absolute -top-3 -right-3 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 shadow-lg transition-transform hover:scale-110 active:scale-90"
-              aria-label="Remove image"
+              className="absolute -top-3 -right-3 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 shadow-lg transition-transform hover:scale-110 active:scale-90 z-10"
+              aria-label="Remove attachment"
             >
-              <BsXCircle size={18} />
+              <BsXCircle size={16} />
             </button>
           </div>
         </div>
